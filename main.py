@@ -11,6 +11,7 @@ from eval import evaluate
 import tensorflow as tf
 from pdb import set_trace
 from dataload import retrieve_gt
+import os
 
 cudnn.benchmark = True
 
@@ -27,7 +28,11 @@ class Config():
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         # Learning parameters
-        self.checkpoint = None  # path to model checkpoint, None if none
+        path = "../checkpoint_ssd300.pth.tar"
+        if os.path.exists(path):
+          self.checkpoint = path  # path to model checkpoint, None if none
+        else:
+          self.checkpoint = None
         self.batch_size = 8  # batch size
         # self.iterations = 120 # number of iterations to train
         self.iterations = 120000 # number of iterations to train
@@ -192,7 +197,7 @@ if __name__ == '__main__':
                                                pin_memory=True)  # note that we're passing the collate function here
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
-    checkpoint = './checkpoint_ssd300.pth.tar'
+    checkpoint = config.checkpoint
     
     # Load model checkpoint that is to be evaluated
     checkpoint = torch.load(checkpoint)

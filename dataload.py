@@ -1,16 +1,21 @@
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+
+
+
 import xml.etree.ElementTree as ET
-import cv2
-import numpy as np
-import os
 import torch
+import cv2
+import os
+import numpy as np
 
 from six.moves import urllib
 import requests
-import tensorflow as tf
 from pdb import set_trace
 import glob
+
+import tensorflow as tf
+import torch
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 def download_file_from_google_drive(id, destination):
     URL = "https://docs.google.com/uc?export=download"
@@ -161,7 +166,7 @@ def x_dataloader(dataloader, i):
     #             torch.from_numpy(bndbox), boxlabel
     return img, bndbox, boxlabel
 
-def retrieve_gt(path, split):
+def retrieve_gt(path, split, limit=0):
 
     filepath = maybe_download("FaceMaskDataset.zip", "../")
     image_ids = extract_images(filepath, split) 
@@ -172,7 +177,10 @@ def retrieve_gt(path, split):
     bndboxes = []
     boxlabels = []
     # for i in range(len(dataloader)):
-    for i in range(20):
+    N = len(dataloader)
+    if limit:
+      N = limit
+    for i in range(N):
         img, bndbox, boxlabel = x_dataloader(dataloader, i)
         if img is None:
             continue

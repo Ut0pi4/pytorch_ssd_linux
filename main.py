@@ -44,10 +44,10 @@ class Config():
         self.momentum = 0.9  # momentum
         self.weight_decay = 5e-4  # weight decay
         self.grad_clip = None  # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
-        self.epochs = 20
+        self.epochs = 100
 
 
-def train(config):
+def train(config, train_dataset):
     """
     Training.
     """
@@ -72,7 +72,7 @@ def train(config):
                                     lr=config.lr, momentum=config.momentum, weight_decay=config.weight_decay)
 
     else:
-        checkpoint = torch.load(checkpoint)
+        checkpoint = torch.load(config.checkpoint)
         start_epoch = checkpoint['epoch'] + 1
         print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
         model = checkpoint['model']
@@ -84,11 +84,6 @@ def train(config):
     
     # set_trace()
     # Custom dataloaders
-    print("loading images")
-    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "train")
-    # set_trace()
-    print("finish loading images")
-    train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
                                      
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True,
                                                collate_fn=train_dataset.collate_fn, num_workers=config.workers,
@@ -100,7 +95,7 @@ def train(config):
     # epochs = config.iterations // (len(train_dataset) // 32)
     epochs = config.epochs
     # set_trace()
-    decay_lr_at = [it // (len(train_dataset) // 8) for it in config.decay_lr_at]
+    decay_lr_at = [it // (len(train_dataset) // 32) for it in config.decay_lr_at]
 
     # Epochs
     print("start training....")
@@ -185,9 +180,17 @@ def train_one_epoch(train_loader, model, criterion, optimizer, epoch):
 
 if __name__ == '__main__':
     config = Config()
-    #train(config)
+    
+    #print("loading images")
+    # set_trace()
+    #images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "train")
+    # set_trace()
+    #print("finish loading images")
+    #train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
+    
+    #train(config, train_dataset)
     print("loading images")
-    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "test")
+    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "test", limit=10)
     # set_trace()
     print("finish loading images")
     test_dataset = FaceMaskDataset(images, bnd_boxes, labels, "test")

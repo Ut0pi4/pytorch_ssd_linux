@@ -2,7 +2,9 @@ from utils import *
 #from datasets import PascalVOCDataset
 from tqdm import tqdm
 from pprint import PrettyPrinter
-
+import numpy as np
+from pdb import set_trace
+from matplotlib import pyplot as plt
 # Good formatting when printing the APs for each class and mAP
 pp = PrettyPrinter()
 
@@ -48,7 +50,7 @@ def evaluate(test_loader, model):
     true_boxes = list()
     true_labels = list()
     # true_difficulties = list()  # it is necessary to know which objects are 'difficult', see 'calculate_mAP' in utils.py
-
+    precisions_dict = {}
     with torch.no_grad():
         # Batches
         #for i, (images, boxes, labels, difficulties) in enumerate(tqdm(test_loader, desc='Evaluating')):
@@ -81,17 +83,35 @@ def evaluate(test_loader, model):
         # APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, true_difficulties)
         mAPs = {}
         for threshold in np.arange(0.5, 0.95, 0.05):  
-            APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
-            mAPs[threshhold] = mAP 
+            precisions, APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
+            threshold = "%.2f" %threshold
+            
+            mAPs[threshold] = mAP 
+            precisions_dict[threshold] = precisions
 
     # Print AP for each class
-    # pp.pprint(APs)
+    pp.pprint(APs)
+    print("\nMean Average Precision (mAP@.5): %.3f" % mAPs["0.50"])
+    #set_trace()
+    print("\nMean Average Precision (mAP@.7): %.3f" % mAPs["0.70"])
+    #set_trace()
+    print("\nMean Average Precision (mAP@.9): %.3f" % mAPs["0.90"])
+    mean_mAPs = sum(mAPs.values())/len(mAPs)
+    print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
+    #set_trace()
     
-    print('\nMean Average Precision (mAP@.5): %.3f' % mAPs[0.5])
-    print('\nMean Average Precision (mAP@.7): %.3f' % mAPs[0.7])
-    print('\nMean Average Precision (mAP@.9): %.3f' % mAPs[0.9])
-    print('\nMean Average Precision (mAP@[.5:.95]): %.3f' % sum(mAPs.values())/len(mAPs))
- 
+    fig_0_50 = plt.figure
+    x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    print("x here")
+    plt.plot(x, precisions_dict["0.50"], label="threshold 0.5")
+    print("plot here")
+    plt.xlabel("Recall")
+    plt.ylabel("Precision")
+    print("finish labeling")
+    fig_0_50.savefig("fig_0_50.png")
+    print("saved figure") 
+    # set_trace()
+    
 
 if __name__ == '__main__':
     evaluate(test_loader, model)

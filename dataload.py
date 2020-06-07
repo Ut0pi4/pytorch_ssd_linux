@@ -78,8 +78,8 @@ def extract_images(filename, split):
     assert split in {'train', 'test'}
     
     """Extract the images into a 4D uint8 numpy array [index, y, x, depth]."""
-    print('Extracting', filename)
     if not tf.io.gfile.exists("../FaceMaskDataset"):
+        print('Extracting', filename)
         tf.io.gfile.makedirs("../FaceMaskDataset")
     
         with zipfile.ZipFile(filename, 'r') as zip_ref:
@@ -180,6 +180,7 @@ def retrieve_gt(path, split, limit=0):
     N = len(dataloader)
     if limit:
       N = limit
+    # set_trace()
     for i in range(N):
         img, bndbox, boxlabel = x_dataloader(dataloader, i)
         if img is None:

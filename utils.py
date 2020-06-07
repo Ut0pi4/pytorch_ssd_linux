@@ -9,8 +9,8 @@ from pdb import set_trace
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Label map
-voc_labels = ('no mask', 'with mask')
-label_map = {k: v + 1 for v, k in enumerate(voc_labels)}
+labels = ('no_mask', 'mask')
+label_map = {k: v + 1 for v, k in enumerate(labels)}
 label_map['background'] = 0
 rev_label_map = {v: k for k, v in label_map.items()}  # Inverse mapping
 
@@ -271,9 +271,6 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
         #cumul_recall = cumul_true_positives / n_easy_class_objects  # (n_class_detections)
         
         cumul_recall = cumul_true_positives / n_objects
-        #set_trace()
-        #if cumul_recall > 1:
-        #    set_trace()
         
 
         # Find the mean of the maximum of the precisions corresponding to recalls above the threshold 't'
@@ -293,7 +290,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     # Keep class-wise average precisions in a dictionary
     average_precisions = {rev_label_map[c + 1]: v for c, v in enumerate(average_precisions.tolist())}
 
-    return average_precisions, mean_average_precision
+    return precisions, average_precisions, mean_average_precision
 
 
 def xy_to_cxcy(xy):

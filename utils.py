@@ -188,6 +188,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
 
     # Calculate APs for each class (except background)
     average_precisions = torch.zeros((n_classes - 1), dtype=torch.float)  # (n_classes - 1)
+    precisions_classes = []
     for c in range(1, n_classes):
         
         # Extract only objects with this class
@@ -211,6 +212,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
         det_class_scores = det_scores[det_labels == c]  # (n_class_detections)
         n_class_detections = det_class_boxes.size(0)
         if n_class_detections == 0:
+            precisions_classes.append(torch.zeros((11), dtype=torch.float).to(device))
             continue
 
         # Sort detections in decreasing order of confidence/scores
@@ -283,14 +285,16 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
             else:
                 precisions[i] = 0.
         average_precisions[c - 1] = precisions.mean()  # c is in [1, n_classes - 1]
+        precisions_classes.append(precisions)
+        
 
     # Calculate Mean Average Precision (mAP)
     mean_average_precision = average_precisions.mean().item()
 
     # Keep class-wise average precisions in a dictionary
     average_precisions = {rev_label_map[c + 1]: v for c, v in enumerate(average_precisions.tolist())}
-
-    return precisions, average_precisions, mean_average_precision
+    
+    return precisions_classes, average_precisions, mean_average_precision
 
 
 def xy_to_cxcy(xy):

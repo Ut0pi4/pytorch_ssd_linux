@@ -116,6 +116,7 @@ def loadxml(path):
     size = []
     bnd_label = []
     bndbox = []
+    difficult = ""
     for i in range(len(root)):
         if root[i].tag == 'size':
             for ele in root[i]:
@@ -124,12 +125,14 @@ def loadxml(path):
             for ele in root[i]:
                 if ele.tag == 'name':
                     bnd_label.append(ele.text)
+                elif ele.tag == 'difficult':
+                    difficult = ele.text    
                 elif ele.tag == 'bndbox':
                     bnd = []
                     for ele_ in ele:
                         bnd.append(int(ele_.text))
                     bndbox.append(bnd)
-    return [size, bnd_label, bndbox]
+    return [size, bnd_label, bndbox, difficult]
 
 def resize_img(img, imgsize, min_size = 600, max_size = 1000):
     H, W = imgsize
@@ -154,17 +157,17 @@ def x_dataloader(dataloader, i):
     img = dataloader.dataset[i][0]
     path = dataloader.dataset.imgs[i][0]
     path = path[:-3]+'xml'
-    imgsize, boxlabel, bndbox = loadxml(path)
+    imgsize, boxlabel, bndbox, difficult = loadxml(path)
     # set_trace()
     if (bndbox == []) | (imgsize == []) | (boxlabel == []) | (0 in imgsize):
-        return [None, None, None]             
+        return [None, None, None, None]             
     # img, scale = resize_img(img, imgsize[:-1])
     # bndbox = resize_box(bndbox, imgsize[:-1], [scale*ele for ele in imgsize[:-1]])
     # boxlabel = boxlabel
     # set_trace()
     # return torch.from_numpy(img).permute(2,0,1).unsqueeze(0), \
     #             torch.from_numpy(bndbox), boxlabel
-    return img, bndbox, boxlabel
+    return img, bndbox, boxlabel, difficult
 
 def retrieve_gt(path, split, limit=0):
 
@@ -176,22 +179,24 @@ def retrieve_gt(path, split, limit=0):
     images = []
     bndboxes = []
     boxlabels = []
+    difficults = []
     # for i in range(len(dataloader)):
     N = len(dataloader)
     if limit:
       N = limit
     # set_trace()
     for i in range(N):
-        img, bndbox, boxlabel = x_dataloader(dataloader, i)
+        img, bndbox, boxlabel, difficult = x_dataloader(dataloader, i)
         if img is None:
             continue
         boxlabel = [1 if label == "face" else 2 for label in boxlabel]
         images.append(img)
         bndboxes.append(bndbox)
         boxlabels.append(boxlabel)
+        difficults.append(int(difficult))
         
     # boxlabel = ["face", "face_masks"]
-    return images, bndboxes, boxlabels
+    return images, bndboxes, boxlabels, difficults
 
 if __name__=="__main__":
     retrieve_gt("../FaceMaskDataset", "train")

@@ -8,6 +8,10 @@ from matplotlib import pyplot as plt
 # Good formatting when printing the APs for each class and mAP
 pp = PrettyPrinter()
 
+# Ignore warnings
+import warnings
+warnings.filterwarnings("ignore")
+
 # Parameters
 #data_folder = './'
 #keep_difficult = True  # difficult ground truth objects must always be considered in mAP calculation, because these objects DO exist!
@@ -100,18 +104,30 @@ def evaluate(test_loader, model):
     print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
     #set_trace()
     
-    fig_0_50 = plt.figure
-    x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    print("x here")
-    plt.plot(x, precisions_dict["0.50"], label="threshold 0.5")
-    print("plot here")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    print("finish labeling")
-    fig_0_50.savefig("fig_0_50.png")
-    print("saved figure") 
+    fig = plt.figure(figsize=(12, 9))
+    i = 1
+    #set_trace()
+    for threshold in ["0.50", "0.70", "0.90"]:
+        for j in range(2):
+            v = i + j * 3
+            x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+            sub = "23"+str(v)
+            plt.subplot(sub)
+            precisions_dict[threshold][j] = precisions_dict[threshold][j].cpu().numpy()
+            label_ = "threshold_" + threshold
+            plt.step(x, precisions_dict[threshold][j], label=label_)
+            plt.xlabel("Recall")
+            plt.ylabel("Precision")
+            plt.legend()
+            
+            print("plotted figure threshold "+threshold)
+        i = i + 1
     # set_trace()
-    
+    figure_name = "P_R_curve.png"
+    fig.tight_layout()
+    fig.savefig(figure_name)
+    plt.close()
+      
 
 if __name__ == '__main__':
     evaluate(test_loader, model)

@@ -50,13 +50,14 @@ if __name__ == '__main__':
     # set_trace()
     images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "train")
     # set_trace()
+    
     print("finish loading images")
 
     train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
     
     train(config, train_dataset)
     print("loading images")
-    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "test")
+    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "val")
     # set_trace()
     print("finish loading images")
     test_dataset = FaceMaskDataset(images, bnd_boxes, labels, "test")

@@ -1,46 +1,40 @@
-This is a **[PyTorch](https://pytorch.org) Tutorial to Object Detection**.
-
-This is the third in [a series of tutorials](https://github.com/sgrvinod/Deep-Tutorials-for-PyTorch) I'm writing about _implementing_ cool models on your own with the amazing PyTorch library.
-
-Basic knowledge of PyTorch, convolutional neural networks is assumed.
-
-If you're new to PyTorch, first read [Deep Learning with PyTorch: A 60 Minute Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html) and [Learning PyTorch with Examples](https://pytorch.org/tutorials/beginner/pytorch_with_examples.html).
-
-Questions, suggestions, or corrections can be posted as issues.
-
-I'm using `PyTorch 0.4` in `Python 3.6`.
-
----
-
-**27 Jan 2020**: Working code for two new tutorials has been added — [Super-Resolution](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Super-Resolution) and [Machine Translation](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Machine-Translation)
-
----
+# Face Mask Detection
 
 # Contents
 
-[***Objective***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#objective)
+[***Objective***](https://github.com/Ut0pi4/pytorch_ssd_linux#objective)
 
-[***Concepts***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#concepts)
+[***Concepts***](https://github.com/Ut0pi4/pytorch_ssd_linux#concepts)
 
-[***Overview***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#overview)
+[***Overview***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#overview)
 
-[***Implementation***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#implementation)
+[***Implementation***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#implementation)
 
-[***Training***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#training)
+[***Training***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#training)
 
-[***Evaluation***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#evaluation)
+[***Evaluation***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#evaluation)
 
-[***Inference***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#inference)
+[***Inference***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#inference)
 
-[***Frequently Asked Questions***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection#faqs)
+[***Frequently Asked Questions***](https://github.com/Ut0pi4/pytorch_ssd_linux#faqs)
 
 # Objective
 
-**To build a model that can detect and localize specific objects in images.**
+In this time of pandemic, people are constantly wearing masks while travelling outdoors. Hence, there is a need to detect faces with mask worn for security reasons. There are many methods to accomplish this objective. In particular, we will be exploring the SSD, YOLOv1 and YOLOv2. 
 
-<p align="center">
-<img src="./img/baseball.gif">
-</p>
+# Download and extract dataset 
+
+To download the dataset, please run the following code:
+
+`python download_dataset.py --dest=PATH_TO_DATASET`
+
+Default `dest`=`../face`
+
+# Methodology
+
+## Single-shot Multibox Detector (SSD)
+
+
 
 We will be implementing the [Single Shot Multibox Detector (SSD)](https://arxiv.org/abs/1512.02325), a popular, powerful, and especially nimble network for this task. The authors' original implementation can be found [here](https://github.com/weiliu89/caffe/tree/ssd).
 

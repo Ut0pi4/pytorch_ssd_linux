@@ -44,21 +44,14 @@ def train(config, train_dataset, model, optimizer, start_epoch):
                                                collate_fn=train_dataset.collate_fn, num_workers=config.workers,
                                                pin_memory=True)  # note that we're passing the collate function here
 
-    # Calculate total number of epochs to train and the epochs to decay learning rate at (i.e. convert iterations to epochs)
-    # To convert iterations to epochs, divide iterations by the number of iterations per epoch
-    # The paper trains for 120,000 iterations with a batch size of 32, decays after 80,000 and 100,000 iterations
-    # epochs = config.iterations // (len(train_dataset) // 32)
+
     epochs = config.epochs
-    # set_trace()
-    decay_lr_at = [it // (len(train_dataset) // config.batch_size) for it in config.decay_lr_at]
+
 
     # Epochs
     print("start training....")
     for epoch in range(start_epoch, epochs):
 
-        # Decay learning rate at particular epochs
-        if epoch in decay_lr_at:
-            adjust_learning_rate(optimizer, config.decay_lr_to)
 
         # One epoch's training
         train_one_epoch(config, train_loader=train_loader,
@@ -110,9 +103,6 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
         optimizer.zero_grad()
         loss.backward()
 
-        # Clip gradients, if necessary
-        if config.grad_clip is not None:
-            clip_gradient(optimizer, config.grad_clip)
 
         # Update model
         optimizer.step()

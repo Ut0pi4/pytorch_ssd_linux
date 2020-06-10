@@ -236,7 +236,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
                 continue
 
             # Find maximum overlap of this detection with objects in this image of this class
-            overlaps = find_jaccard_overlap(this_detection_box, object_boxes)  # (1, n_class_objects_in_img)
+            overlaps = find_overlap(this_detection_box, object_boxes)  # (1, n_class_objects_in_img)
             max_overlap, ind = torch.max(overlaps.squeeze(0), dim=0)  # (), () - scalars
 
             # 'ind' is the index of the object in these image-level tensors 'object_boxes', 'object_difficulties'
@@ -373,7 +373,7 @@ def find_intersection(set_1, set_2):
     return intersection_dims[:, :, 0] * intersection_dims[:, :, 1]  # (n1, n2)
 
 
-def find_jaccard_overlap(set_1, set_2):
+def find_overlap(set_1, set_2):
     """
     Find the Jaccard Overlap (IoU) of every box combination between two sets of boxes that are in boundary coordinates.
 
@@ -398,44 +398,6 @@ def find_jaccard_overlap(set_1, set_2):
 
 # Some augmentation functions below have been adapted from
 # From https://github.com/amdegroot/ssd.pytorch/blob/master/utils/augmentations.py
-
-def expand(image, boxes, filler):
-    """
-    Perform a zooming out operation by placing the image in a larger canvas of filler material.
-
-    Helps to learn to detect smaller objects.
-
-    :param image: image, a tensor of dimensions (3, original_h, original_w)
-    :param boxes: bounding boxes in boundary coordinates, a tensor of dimensions (n_objects, 4)
-    :param filler: RBG values of the filler material, a list like [R, G, B]
-    :return: expanded image, updated bounding box coordinates
-    """
-    # Calculate dimensions of proposed expanded (zoomed-out) image
-    original_h = image.size(1)
-    original_w = image.size(2)
-    max_scale = 4
-    scale = random.uniform(1, max_scale)
-    new_h = int(scale * original_h)
-    new_w = int(scale * original_w)
-
-    # Create such an image with the filler
-    filler = torch.FloatTensor(filler)  # (3)
-    new_image = torch.ones((3, new_h, new_w), dtype=torch.float) * filler.unsqueeze(1).unsqueeze(1)  # (3, new_h, new_w)
-    # Note - do not use expand() like new_image = filler.unsqueeze(1).unsqueeze(1).expand(3, new_h, new_w)
-    # because all expanded values will share the same memory, so changing one pixel will change all
-
-    # Place the original image at random coordinates in this new image (origin at top-left of image)
-    left = random.randint(0, new_w - original_w)
-    right = left + original_w
-    top = random.randint(0, new_h - original_h)
-    bottom = top + original_h
-    new_image[:, top:bottom, left:right] = image
-
-    # Adjust bounding boxes' coordinates accordingly
-    new_boxes = boxes + torch.FloatTensor([left, top, left, top]).unsqueeze(
-        0)  # (n_objects, 4), n_objects is the no. of objects in this image
-
-    return new_image, new_boxes
 
 
 def random_crop(image, boxes, labels, difficulties):
@@ -488,7 +450,7 @@ def random_crop(image, boxes, labels, difficulties):
             crop = torch.FloatTensor([left, top, right, bottom])  # (4)
 
             # Calculate Jaccard overlap between the crop and the bounding boxes
-            overlap = find_jaccard_overlap(crop.unsqueeze(0),
+            overlap = find_overlap(crop.unsqueeze(0),
                                            boxes)  # (1, n_objects), n_objects is the no. of objects in this image
             overlap = overlap.squeeze(0)  # (n_objects)
 
@@ -570,36 +532,6 @@ def resize(image, boxes, dims=(300, 300), return_percent_coords=True):
     return new_image, new_boxes
 
 
-def photometric_distort(image):
-    """
-    Distort brightness, contrast, saturation, and hue, each with a 50% chance, in random order.
-
-    :param image: image, a PIL Image
-    :return: distorted image
-    """
-    new_image = image
-
-    distortions = [FT.adjust_brightness,
-                   FT.adjust_contrast,
-                   FT.adjust_saturation,
-                   FT.adjust_hue]
-
-    random.shuffle(distortions)
-
-    for d in distortions:
-        if random.random() < 0.5:
-            if d.__name__ is 'adjust_hue':
-                # Caffe repo uses a 'hue_delta' of 18 - we divide by 255 because PyTorch needs a normalized value
-                adjust_factor = random.uniform(-18 / 255., 18 / 255.)
-            else:
-                # Caffe repo uses 'lower' and 'upper' values of 0.5 and 1.5 for brightness, contrast, and saturation
-                adjust_factor = random.uniform(0.5, 1.5)
-
-            # Apply this distortion
-            new_image = d(new_image, adjust_factor)
-
-    return new_image
-
 
 def transform(image, boxes, labels, split):
     """
@@ -661,16 +593,6 @@ def transform(image, boxes, labels, split):
     return new_image, new_boxes, new_labels
 
 
-def adjust_learning_rate(optimizer, scale):
-    """
-    Scale learning rate by a specified factor.
-
-    :param optimizer: optimizer whose learning rate must be shrunk.
-    :param scale: factor to multiply learning rate with.
-    """
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = param_group['lr'] * scale
-    print("DECAYING learning rate.\n The new LR is %f\n" % (optimizer.param_groups[1]['lr'],))
 
 
 def accuracy(scores, targets, k):
@@ -725,14 +647,4 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def clip_gradient(optimizer, grad_clip):
-    """
-    Clips gradients computed during backpropagation to avoid explosion of gradients.
 
-    :param optimizer: optimizer with the gradients to be clipped
-    :param grad_clip: clip value
-    """
-    for group in optimizer.param_groups:
-        for param in group['params']:
-            if param.grad is not None:
-                param.grad.data.clamp_(-grad_clip, grad_clip)

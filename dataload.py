@@ -15,43 +15,13 @@ from six.moves import urllib
 import requests
 from pdb import set_trace
 import glob
+from download_dataset import download_extract
 
 import tensorflow as tf
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-# FILE_ID = "1QspxOJMDf_rAWVV7AU_Nc0rjo1_EPEDW"
-# DESTINATION = '../face_mask_detection.zip'
-SOURCE_URL = "https://cloud.tsinghua.edu.cn/d/af356cf803894d65b447/files/?p=%2FAIZOO%2F%E4%BA%BA%E8%84%B8%E5%8F%A3%E7%BD%A9%E6%A3%80%E6%B5%8B%E6%95%B0%E6%8D%AE%E9%9B%86.zip&dl=1"
-
-def maybe_download(filename, work_directory):
-	"""Download the data from website, unless it's already here."""
-	if not tf.io.gfile.exists(work_directory):
-		tf.io.gfile.makedirs(work_directory)
-	filepath = os.path.join(work_directory, filename)
-	# set_trace()
-	if not tf.io.gfile.exists(filepath):
-		filepath, _ = urllib.request.urlretrieve(SOURCE_URL, filepath)
-		# filepath = download_file_from_google_drive(FILE_ID, filepath)
-	with tf.io.gfile.GFile(filepath) as f:
-		print('Successfully downloaded', filename)
-	return filepath
-
-
-import zipfile
-from pathlib import Path
-def extract_images(filename):
-	
-	
-	"""Extract the images into a 4D uint8 numpy array [index, y, x, depth]."""
-	if not tf.io.gfile.exists("../FaceMaskDataset"):
-		print('Extracting', filename)
-		tf.io.gfile.makedirs("../FaceMaskDataset")
-	
-		with zipfile.ZipFile(filename, 'r') as zip_ref:
-			zip_ref.extractall("../FaceMaskDataset")
-	
 	
 
 def load_data(data_dir = "./", batch_size = 1):
@@ -131,46 +101,45 @@ def data_loader(dataloader, i):
 
 def retrieve_gt(path, split, limit=0):
 
-	assert split in ["train", "val"]
-	filepath = maybe_download("FaceMaskDataset.zip", "../")
-	extract_images(filepath) 
+  assert split in ["train", "val"]
+  download_extract(path)
+  
+  path = path + "/FaceMaskDataset/"
+  dataloader = load_data(data_dir = path)
 
-
-	dataloader = load_data(data_dir = path)
-
-	images = []
-	bndboxes = []
-	boxlabels = []
-	difficults = []
-	# set_trace()
-	if split == "train":
-		i = 0
-		N = 6120
-		if limit:
-			N= limit
-	elif split == "val":
-		i = 6120
-		N = len(dataloader)
-
-		if limit:
-			N = i + limit
-
-	while i < N:
-		img, bndbox, boxlabel, difficult = data_loader(dataloader, i)
-		i += 1
-		if img is None:
-			continue
-		boxlabel = [1 if label == "face" else 2 for label in boxlabel]
-		images.append(img)
-		bndboxes.append(bndbox)
-		boxlabels.append(boxlabel)
-		difficults.append(difficult)
+  images = []
+  bndboxes = []
+  boxlabels = []
+  difficults = []
+  # set_trace()
+  if split == "train":
+  	i = 0
+  	N = 6120
+  	if limit:
+  		N= limit
+  elif split == "val":
+  	i = 6120
+  	N = len(dataloader)
+  
+  	if limit:
+  		N = i + limit
+  
+  while i < N:
+  	img, bndbox, boxlabel, difficult = data_loader(dataloader, i)
+  	i += 1
+  	if img is None:
+  		continue
+  	boxlabel = [1 if label == "face" else 2 for label in boxlabel]
+  	images.append(img)
+  	bndboxes.append(bndbox)
+  	boxlabels.append(boxlabel)
+  	difficults.append(difficult)
 
 		
-	print("finish retrieving data")
-
-	# boxlabel = ["face", "face_masks"]
-	return images, bndboxes, boxlabels, difficults
+  print("finish retrieving data")
+  
+  # boxlabel = ["face", "face_masks"]
+  return images, bndboxes, boxlabels, difficults
 
 if __name__=="__main__":
 	images, bndboxes, boxlabels, difficults = retrieve_gt("../FaceMaskDataset/", "train")

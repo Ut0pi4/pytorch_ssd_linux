@@ -2,6 +2,7 @@ from utils import *
 #from datasets import PascalVOCDataset
 from tqdm import tqdm
 from pprint import PrettyPrinter
+import argparse
 import numpy as np
 from pdb import set_trace
 from config import Config
@@ -167,7 +168,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="FaceMaskDetection")
     parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
     parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
-
+    args = parser.parse_args()
     config = Config()
     # Testing Phase
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     

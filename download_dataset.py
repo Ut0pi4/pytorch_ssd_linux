@@ -49,11 +49,13 @@ def extract_images(filename, work_directory):
 		with zipfile.ZipFile(filename, 'r') as zip_ref:
 			zip_ref.extractall(dest)
 
+def download_extract(dest):
+  filepath = maybe_download("FaceMaskDataset.zip", dest)
+  extract_images(filepath, dest)
 
 if __name__=="__main__":
 	parser = argparse.ArgumentParser(description="FaceMaskDetection")
 	
 	parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
 	args = parser.parse_args()
-	filepath = maybe_download("FaceMaskDataset.zip", args.dest)
-	extract_images(filepath, args.dest) 
+	download_extract(dest)

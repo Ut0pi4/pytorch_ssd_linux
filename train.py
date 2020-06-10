@@ -3,6 +3,8 @@ import torch
 import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
+
+import argparse
 from model import SSD300, MultiBoxLoss
 from config import Config
 from datasets import FaceMaskDataset
@@ -132,12 +134,12 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
     
 if __name__ == '__main__':
 
-	parser = argparse.ArgumentParser(description="FaceMaskDetection")
-	
-	parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
-	parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
-	
-	args = parser.parse_args()
+    parser = argparse.ArgumentParser(description="FaceMaskDetection")
+    
+    parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
+    parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
+    
+    args = parser.parse_args()
     config = Config()
     
     # Training Phase
@@ -156,7 +158,7 @@ if __name__ == '__main__':
                     not_biases.append(param)
         optimizer = torch.optim.SGD(params=[{'params': biases, 'lr': 2 * config.lr}, {'params': not_biases}],
                                     lr=config.lr, momentum=config.momentum, weight_decay=config.weight_decay)
-
+    
     else:
         checkpoint = torch.load(config.checkpoint)
         start_epoch = checkpoint['epoch'] + 1
@@ -165,14 +167,14 @@ if __name__ == '__main__':
         optimizer = checkpoint['optimizer']
     
     print("loading images")
-  
+    
     images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "train", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
-
+    
     
     print("finish loading images")
-
+    
     train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
     
     train(config, train_dataset, model, optimizer, start_epoch)

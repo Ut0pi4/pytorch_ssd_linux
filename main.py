@@ -73,6 +73,10 @@ if __name__ == '__main__':
     print("loading images")
   
     images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "train")
+<<<<<<< HEAD
+=======
+    # set_trace()
+>>>>>>> f3e79338528bddff36688d37ba72c4aa1bd9f946
     
     print("finish loading images")
 
@@ -91,7 +95,11 @@ if __name__ == '__main__':
     
     #train(config, train_dataset)
     print("loading images")
+<<<<<<< HEAD
     images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "test")
+=======
+    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "val")
+>>>>>>> f3e79338528bddff36688d37ba72c4aa1bd9f946
     # set_trace()
     print("finish loading images")
     test_dataset = FaceMaskDataset(images, bnd_boxes, labels, "test")

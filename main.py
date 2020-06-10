@@ -46,17 +46,52 @@ class Config():
 if __name__ == '__main__':
     config = Config()
     
+    # Training Phase
+    if config.checkpoint is None:
+        start_epoch = 0
+        model = SSD300(n_classes=config.n_classes)
+        # set_trace()
+        # Initialize the optimizer, with twice the default learning rate for biases, as in the original Caffe repo
+        biases = list()
+        not_biases = list()
+        for param_name, param in model.named_parameters():
+            if param.requires_grad:
+                if param_name.endswith('.bias'):
+                    biases.append(param)
+                else:
+                    not_biases.append(param)
+        optimizer = torch.optim.SGD(params=[{'params': biases, 'lr': 2 * config.lr}, {'params': not_biases}],
+                                    lr=config.lr, momentum=config.momentum, weight_decay=config.weight_decay)
+
+    else:
+        checkpoint = torch.load(config.checkpoint)
+        start_epoch = checkpoint['epoch'] + 1
+        print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
+        model = checkpoint['model']
+        optimizer = checkpoint['optimizer']
+    
     print("loading images")
-    # set_trace()
+  
     images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "train")
-    # set_trace()
+    
     print("finish loading images")
 
     train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
     
-    train(config, train_dataset)
+    train(config, train_dataset, model, optimizer, start_epoch)
+    
+    # Testing Phase
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
+    checkpoint = "../checkpoint_ssd300.pth.tar"
+    
+    # Load model checkpoint that is to be evaluated
+    checkpoint = torch.load(checkpoint)
+    model = checkpoint['model']
+    model = model.to(device)
+    
+    #train(config, train_dataset)
     print("loading images")
-    images, bnd_boxes, labels = retrieve_gt("../FaceMaskDataset", "test")
+    images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "test")
     # set_trace()
     print("finish loading images")
     test_dataset = FaceMaskDataset(images, bnd_boxes, labels, "test")
@@ -65,13 +100,7 @@ if __name__ == '__main__':
                                                collate_fn=test_dataset.collate_fn, num_workers=config.workers,
                                                pin_memory=True)  # note that we're passing the collate function here
     
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
-    checkpoint = "../checkpoint_ssd300.pth.tar"
     
-    # Load model checkpoint that is to be evaluated
-    checkpoint = torch.load(checkpoint)
-    model = checkpoint['model']
-    model = model.to(device)
     
     # Switch to eval mode
     model.eval()

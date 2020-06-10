@@ -5,7 +5,8 @@ import torch.optim
 import torch.utils.data
 
 import argparse
-from model import SSD300, MultiBoxLoss
+# from model import SSD300, MultiBoxLoss
+from model_1 import SSD300, MultiBoxLoss
 from config import Config
 from datasets import FaceMaskDataset
 from utils import *

@@ -4,17 +4,17 @@
 
 [***Objective***](https://github.com/Ut0pi4/pytorch_ssd_linux#objective)
 
-[***Concepts***](https://github.com/Ut0pi4/pytorch_ssd_linux#concepts)
+[***Dataset***](https://github.com/Ut0pi4/pytorch_ssd_linux#dataset)
 
-[***Overview***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#overview)
+[***Methodology***](https://github.com/Ut0pi4/pytorch_ssd_linux#methodology)
 
-[***Implementation***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#implementation)
+[***Implementation***](https://github.com/Ut0pi4/pytorch_ssd_linux#implementation)
 
-[***Training***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#training)
+[***Training***](https://github.com/Ut0pi4/pytorch_ssd_linux#training)
 
-[***Evaluation***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#evaluation)
+[***Evaluation***](https://github.com/Ut0pi4/pytorch_ssd_linux#evaluation)
 
-[***Inference***](https://github.com/sgrvinod/Ut0pi4/pytorch_ssd_linux#inference)
+[***Inference***](https://github.com/Ut0pi4/pytorch_ssd_linux#inference)
 
 [***Frequently Asked Questions***](https://github.com/Ut0pi4/pytorch_ssd_linux#faqs)
 
@@ -22,20 +22,50 @@
 
 In this time of pandemic, people are constantly wearing masks while travelling outdoors. Hence, there is a need to detect faces with mask worn for security reasons. There are many methods to accomplish this objective. In particular, we will be exploring the SSD, YOLOv1 and YOLOv2. 
 
-# Download and extract dataset 
+# Dataset 
 
 To download the dataset, please run the following code:
 
 `python download_dataset.py --dest=PATH_TO_DATASET`
 
-Default `dest`=`../face`
+Default `dest`=`../FaceMaskDataset`
 
 # Methodology
 
 ## Single-shot Multibox Detector (SSD)
 
+### Requirement
+To create a new conda environment for SSD, please run:
 
+`conda env create -f SSD_env.yml`
 
+### Train
+To train an SSD model, please run:
+
+`
+python train.py --dest=PATH_TO_DATASET
+                --limit=NO_OF_IMAGES_TO_PROCESS
+`
+
+Default parameters:
+- `dest`=`../FaceMaskDataset`
+- `limit`=`0`
+
+### Test
+To evaluate the model and calculate mAPs, please run:
+
+`
+python train.py --dest=PATH_TO_DATASET
+                --limit=NO_OF_IMAGES_TO_PROCESS
+`
+
+Default parameters:
+- `dest`=`../FaceMaskDataset`
+- `limit`=`0`
+
+Precision-Recall curves are saved in P_R_curve_face.png and P_R_curve_facemask.png
+
+<!---
 We will be implementing the [Single Shot Multibox Detector (SSD)](https://arxiv.org/abs/1512.02325), a popular, powerful, and especially nimble network for this task. The authors' original implementation can be found [here](https://github.com/weiliu89/caffe/tree/ssd).
 
 Here are some examples of object detection in images not seen during training –
@@ -991,3 +1021,4 @@ Redundant detections aren't really a problem since we're NMS-ing the hell out of
 __Sorry, but I gotta ask... _[what's in the boooox?!](https://cnet4.cbsistatic.com/img/cLD5YVGT9pFqx61TuMtcSBtDPyY=/570x0/2017/01/14/6d8103f7-a52d-46de-98d0-56d0e9d79804/se7en.png)___
 
 Ha.
+-->

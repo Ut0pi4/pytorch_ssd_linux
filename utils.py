@@ -1,4 +1,3 @@
-import json
 import os
 import torch
 import random
@@ -14,113 +13,7 @@ label_map = {k: v + 1 for v, k in enumerate(labels)}
 label_map['background'] = 0
 rev_label_map = {v: k for k, v in label_map.items()}  # Inverse mapping
 
-# Color map for bounding boxes of detected objects from https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
-distinct_colors = ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911eb4', '#46f0f0', '#f032e6',
-                   '#d2f53c', '#fabebe', '#008080', '#000080', '#aa6e28', '#fffac8', '#800000', '#aaffc3', '#808000',
-                   '#ffd8b1', '#e6beff', '#808080', '#FFFFFF']
-label_color_map = {k: distinct_colors[i] for i, k in enumerate(label_map.keys())}
 
-
-def parse_annotation(annotation_path):
-    tree = ET.parse(annotation_path)
-    root = tree.getroot()
-
-    boxes = list()
-    labels = list()
-    difficulties = list()
-    for object in root.iter('object'):
-
-        difficult = int(object.find('difficult').text == '1')
-
-        label = object.find('name').text.lower().strip()
-        if label not in label_map:
-            continue
-
-        bbox = object.find('bndbox')
-        xmin = int(bbox.find('xmin').text) - 1
-        ymin = int(bbox.find('ymin').text) - 1
-        xmax = int(bbox.find('xmax').text) - 1
-        ymax = int(bbox.find('ymax').text) - 1
-
-        boxes.append([xmin, ymin, xmax, ymax])
-        labels.append(label_map[label])
-        difficulties.append(difficult)
-
-    return {'boxes': boxes, 'labels': labels, 'difficulties': difficulties}
-
-
-def create_data_lists(voc07_path, voc12_path, output_folder):
-    """
-    Create lists of images, the bounding boxes and labels of the objects in these images, and save these to file.
-
-    :param voc07_path: path to the 'VOC2007' folder
-    :param voc12_path: path to the 'VOC2012' folder
-    :param output_folder: folder where the JSONs must be saved
-    """
-    voc07_path = os.path.abspath(voc07_path)
-    voc12_path = os.path.abspath(voc12_path)
-
-    train_images = list()
-    train_objects = list()
-    n_objects = 0
-
-    # Training data
-    for path in [voc07_path, voc12_path]:
-
-        # Find IDs of images in training data
-        with open(os.path.join(path, 'ImageSets/Main/trainval.txt')) as f:
-            ids = f.read().splitlines()
-
-        for id in ids:
-            # Parse annotation's XML file
-            objects = parse_annotation(os.path.join(path, 'Annotations', id + '.xml'))
-            if len(objects) == 0:
-                continue
-            n_objects += len(objects)
-            train_objects.append(objects)
-            train_images.append(os.path.join(path, 'JPEGImages', id + '.jpg'))
-
-    assert len(train_objects) == len(train_images)
-
-    # Save to file
-    with open(os.path.join(output_folder, 'TRAIN_images.json'), 'w') as j:
-        json.dump(train_images, j)
-    with open(os.path.join(output_folder, 'TRAIN_objects.json'), 'w') as j:
-        json.dump(train_objects, j)
-    with open(os.path.join(output_folder, 'label_map.json'), 'w') as j:
-        json.dump(label_map, j)  # save label map too
-
-    print('\nThere are %d training images containing a total of %d objects. Files have been saved to %s.' % (
-        len(train_images), n_objects, os.path.abspath(output_folder)))
-
-    # Test data
-    test_images = list()
-    test_objects = list()
-    n_objects = 0
-
-    # Find IDs of images in the test data
-    with open(os.path.join(voc07_path, 'ImageSets/Main/test.txt')) as f:
-        ids = f.read().splitlines()
-
-    for id in ids:
-        # Parse annotation's XML file
-        objects = parse_annotation(os.path.join(voc07_path, 'Annotations', id + '.xml'))
-        if len(objects) == 0:
-            continue
-        test_objects.append(objects)
-        n_objects += len(objects)
-        test_images.append(os.path.join(voc07_path, 'JPEGImages', id + '.jpg'))
-
-    assert len(test_objects) == len(test_images)
-
-    # Save to file
-    with open(os.path.join(output_folder, 'TEST_images.json'), 'w') as j:
-        json.dump(test_images, j)
-    with open(os.path.join(output_folder, 'TEST_objects.json'), 'w') as j:
-        json.dump(test_objects, j)
-
-    print('\nThere are %d test images containing a total of %d objects. Files have been saved to %s.' % (
-        len(test_images), n_objects, os.path.abspath(output_folder)))
 
 
 def decimate(tensor, m):
@@ -400,91 +293,6 @@ def find_overlap(set_1, set_2):
 # From https://github.com/amdegroot/ssd.pytorch/blob/master/utils/augmentations.py
 
 
-def random_crop(image, boxes, labels, difficulties):
-    """
-    Performs a random crop in the manner stated in the paper. Helps to learn to detect larger and partial objects.
-
-    Note that some objects may be cut out entirely.
-
-    Adapted from https://github.com/amdegroot/ssd.pytorch/blob/master/utils/augmentations.py
-
-    :param image: image, a tensor of dimensions (3, original_h, original_w)
-    :param boxes: bounding boxes in boundary coordinates, a tensor of dimensions (n_objects, 4)
-    :param labels: labels of objects, a tensor of dimensions (n_objects)
-    :param difficulties: difficulties of detection of these objects, a tensor of dimensions (n_objects)
-    :return: cropped image, updated bounding box coordinates, updated labels, updated difficulties
-    """
-    original_h = image.size(1)
-    original_w = image.size(2)
-    # Keep choosing a minimum overlap until a successful crop is made
-    while True:
-        # Randomly draw the value for minimum overlap
-        min_overlap = random.choice([0., .1, .3, .5, .7, .9, None])  # 'None' refers to no cropping
-
-        # If not cropping
-        if min_overlap is None:
-            return image, boxes, labels, difficulties
-
-        # Try up to 50 times for this choice of minimum overlap
-        # This isn't mentioned in the paper, of course, but 50 is chosen in paper authors' original Caffe repo
-        max_trials = 50
-        for _ in range(max_trials):
-            # Crop dimensions must be in [0.3, 1] of original dimensions
-            # Note - it's [0.1, 1] in the paper, but actually [0.3, 1] in the authors' repo
-            min_scale = 0.3
-            scale_h = random.uniform(min_scale, 1)
-            scale_w = random.uniform(min_scale, 1)
-            new_h = int(scale_h * original_h)
-            new_w = int(scale_w * original_w)
-
-            # Aspect ratio has to be in [0.5, 2]
-            aspect_ratio = new_h / new_w
-            if not 0.5 < aspect_ratio < 2:
-                continue
-
-            # Crop coordinates (origin at top-left of image)
-            left = random.randint(0, original_w - new_w)
-            right = left + new_w
-            top = random.randint(0, original_h - new_h)
-            bottom = top + new_h
-            crop = torch.FloatTensor([left, top, right, bottom])  # (4)
-
-            # Calculate Jaccard overlap between the crop and the bounding boxes
-            overlap = find_overlap(crop.unsqueeze(0),
-                                           boxes)  # (1, n_objects), n_objects is the no. of objects in this image
-            overlap = overlap.squeeze(0)  # (n_objects)
-
-            # If not a single bounding box has a Jaccard overlap of greater than the minimum, try again
-            if overlap.max().item() < min_overlap:
-                continue
-
-            # Crop image
-            new_image = image[:, top:bottom, left:right]  # (3, new_h, new_w)
-
-            # Find centers of original bounding boxes
-            bb_centers = (boxes[:, :2] + boxes[:, 2:]) / 2.  # (n_objects, 2)
-
-            # Find bounding boxes whose centers are in the crop
-            centers_in_crop = (bb_centers[:, 0] > left) * (bb_centers[:, 0] < right) * (bb_centers[:, 1] > top) * (
-                    bb_centers[:, 1] < bottom)  # (n_objects), a Torch uInt8/Byte tensor, can be used as a boolean index
-
-            # If not a single bounding box has its center in the crop, try again
-            if not centers_in_crop.any():
-                continue
-
-            # Discard bounding boxes that don't meet this criterion
-            new_boxes = boxes[centers_in_crop, :]
-            new_labels = labels[centers_in_crop]
-            new_difficulties = difficulties[centers_in_crop]
-
-            # Calculate bounding boxes' new coordinates in the crop
-            new_boxes[:, :2] = torch.max(new_boxes[:, :2], crop[:2])  # crop[:2] is [left, top]
-            new_boxes[:, :2] -= crop[:2]
-            new_boxes[:, 2:] = torch.min(new_boxes[:, 2:], crop[2:])  # crop[2:] is [right, bottom]
-            new_boxes[:, 2:] -= crop[:2]
-
-            return new_image, new_boxes, new_labels, new_difficulties
-
 
 def flip(image, boxes):
     """
@@ -593,22 +401,6 @@ def transform(image, boxes, labels, split):
     return new_image, new_boxes, new_labels
 
 
-
-
-def accuracy(scores, targets, k):
-    """
-    Computes top-k accuracy, from predicted and true labels.
-
-    :param scores: scores from the model
-    :param targets: true labels
-    :param k: k in top-k accuracy
-    :return: top-k accuracy
-    """
-    batch_size = targets.size(0)
-    _, ind = scores.topk(k, 1, True, True)
-    correct = ind.eq(targets.view(-1, 1).expand_as(ind))
-    correct_total = correct.view(-1).float().sum()  # 0D tensor
-    return correct_total.item() * (100.0 / batch_size)
 
 
 def save_checkpoint(epoch, model, optimizer):

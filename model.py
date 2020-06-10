@@ -476,7 +476,7 @@ class SSD300(nn.Module):
                 class_decoded_locs = class_decoded_locs[sort_ind]  # (n_min_score, 4)
 
                 # Find the overlap between predicted boxes
-                overlap = find_jaccard_overlap(class_decoded_locs, class_decoded_locs)  # (n_qualified, n_min_score)
+                overlap = find_overlap(class_decoded_locs, class_decoded_locs)  # (n_qualified, n_min_score)
 
                 # Non-Maximum Suppression (NMS)
 
@@ -576,7 +576,7 @@ class MultiBoxLoss(nn.Module):
         for i in range(batch_size):
             n_objects = boxes[i].size(0)
 
-            overlap = find_jaccard_overlap(boxes[i],
+            overlap = find_overlap(boxes[i],
                                            self.priors_xy)  # (n_objects, 8732)
 
             # For each prior, find the object that has the maximum overlap

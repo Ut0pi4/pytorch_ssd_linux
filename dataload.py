@@ -7,9 +7,9 @@ import cv2
 import os
 import numpy as np
 
-from matplotlib import pyplot as plt
-import plotly.express as px
-import plotly.graph_objects as go
+#from matplotlib import pyplot as plt
+#import plotly.express as px
+#import plotly.graph_objects as go
 
 from six.moves import urllib
 import requests
@@ -173,69 +173,4 @@ def retrieve_gt(path, split, limit=0):
 	return images, bndboxes, boxlabels, difficults
 
 if __name__=="__main__":
-	
-
-	for split in ["train", "val"]:
-		images, bndboxes, boxlabels, difficults = retrieve_gt("../FaceMaskDataset/", split)
-		print("count labels and difficults...")
-		counts_labels = np.zeros((2))
-		for labels in boxlabels:
-			for i in range(2):
-				counts_labels[i] += np.sum(np.array(labels)==i+1)
-			 
-		counts_difficults = np.zeros((2))
-		
-		for difficult in difficults:
-			for i in range(2):
-				counts_difficults[i] += np.sum(np.array(difficult)==i)
-		print(split)
-		print("label counts: ", counts_labels)
-		print("difficult counts: ", counts_difficults)
-		
-		counts = counts_labels.astype(int)
-		title = "Counts of Masks labels (" + split +")"
-		fig = go.Figure(
-			
-			data=go.Bar(
-				orientation='h',
-				x=counts,
-				y=["no_mask", "mask"],
-				
-				text=counts,
-				textposition='auto'
-				),
-			
-			layout=go.Layout(
-				title=title,
-				showlegend=False,
-				xaxis=go.layout.XAxis(showticklabels=False),
-				yaxis=go.layout.YAxis(autorange='reversed'),
-				width=750, height=400
-			)
-		)
-		fig.show()
-		
-		counts = counts_difficults.astype(int)
-		title = "Counts of difficult images (" + split +")"
-		fig = go.Figure(
-			
-			data=go.Bar(
-				orientation='h',
-				x=counts,
-				y=["not difficult", "difficult"],
-				
-				text=counts,
-				textposition='auto'
-				),
-			
-			layout=go.Layout(
-				title=title,
-				showlegend=False,
-				xaxis=go.layout.XAxis(showticklabels=False),
-				yaxis=go.layout.YAxis(autorange='reversed'),
-				width=750, height=400
-			)
-		)
-		fig.show()
-	
-	
+	images, bndboxes, boxlabels, difficults = retrieve_gt("../FaceMaskDataset/", "train")

@@ -163,6 +163,11 @@ def evaluate(test_loader, model):
       
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description="FaceMaskDetection")
+    parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
+    parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
+
     config = Config()
     # Testing Phase
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
@@ -176,7 +181,7 @@ if __name__ == '__main__':
     #train(config, train_dataset)
     print("loading images")
 
-    images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "val", limit=10)
+    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "val", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
     print("finish loading images")

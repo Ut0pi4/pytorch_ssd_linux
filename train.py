@@ -131,6 +131,13 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
     
 if __name__ == '__main__':
+
+	parser = argparse.ArgumentParser(description="FaceMaskDetection")
+	
+	parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
+	parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
+	
+	args = parser.parse_args()
     config = Config()
     
     # Training Phase
@@ -159,7 +166,7 @@ if __name__ == '__main__':
     
     print("loading images")
   
-    images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "train", limit=10)
+    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "train", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
 

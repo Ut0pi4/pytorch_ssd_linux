@@ -109,28 +109,56 @@ def evaluate(test_loader, model):
     print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
     #set_trace()
     
-    fig = plt.figure(figsize=(12, 9))
+    fig = plt.figure(figsize=(12,9))
     i = 1
     #set_trace()
     for threshold in ["0.50", "0.70", "0.90"]:
-        for j in range(2):
-            v = i + j * 3
-            x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-            sub = "23"+str(v)
-            plt.subplot(sub)
-            precisions_dict[threshold][j] = precisions_dict[threshold][j].cpu().numpy()
-            label_ = "threshold_" + threshold
-            plt.step(x, precisions_dict[threshold][j], label=label_)
-            plt.xlabel("Recall")
-            plt.ylabel("Precision")
-            plt.legend()
+        
+        
+        x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+        sub = "13"+str(i)
+        plt.subplot(sub)
+        precisions_dict[threshold][0] = precisions_dict[threshold][0].cpu().numpy()
+        label_ = "threshold_" + threshold
+        plt.step(x, precisions_dict[threshold][0], label=label_)
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        plt.legend()
             
-            print("plotted figure threshold "+threshold)
+        print("plotted figure threshold "+threshold)
         i = i + 1
     # set_trace()
-    figure_name = "P_R_curve.png"
+    figure_name = "P_R_curve_face.png"
     fig.tight_layout()
+    print("Saving to ", figure_name)
     fig.savefig(figure_name)
+    print("Saved!")
+    plt.close()
+    
+    fig = plt.figure(figsize=(12,9))
+    i = 1
+    #set_trace()
+    for threshold in ["0.50", "0.70", "0.90"]:
+        
+        
+        x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+        sub = "13"+str(i)
+        plt.subplot(sub)
+        precisions_dict[threshold][1] = precisions_dict[threshold][1].cpu().numpy()
+        label_ = "threshold_" + threshold
+        plt.step(x, precisions_dict[threshold][1], label=label_)
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        plt.legend()
+            
+        print("plotted figure threshold "+threshold)
+        i = i + 1
+    # set_trace()
+    figure_name = "P_R_curve_facemask.png"
+    fig.tight_layout()
+    print("Saving to ", figure_name)
+    fig.savefig(figure_name)
+    print("Saved!")
     plt.close()
       
 

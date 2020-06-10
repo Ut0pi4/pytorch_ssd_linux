@@ -4,10 +4,11 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 from model import SSD300, MultiBoxLoss
-
+from config import Config
+from datasets import FaceMaskDataset
 from utils import *
-
-from eval import evaluate
+from dataload import retrieve_gt
+#from eval import evaluate
 import tensorflow as tf
 from pdb import set_trace
 from dataload import retrieve_gt
@@ -130,4 +131,41 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
     
 if __name__ == '__main__':
-    train()
+    config = Config()
+    
+    # Training Phase
+    if config.checkpoint is None:
+        start_epoch = 0
+        model = SSD300(n_classes=config.n_classes)
+        # set_trace()
+        # Initialize the optimizer, with twice the default learning rate for biases, as in the original Caffe repo
+        biases = list()
+        not_biases = list()
+        for param_name, param in model.named_parameters():
+            if param.requires_grad:
+                if param_name.endswith('.bias'):
+                    biases.append(param)
+                else:
+                    not_biases.append(param)
+        optimizer = torch.optim.SGD(params=[{'params': biases, 'lr': 2 * config.lr}, {'params': not_biases}],
+                                    lr=config.lr, momentum=config.momentum, weight_decay=config.weight_decay)
+
+    else:
+        checkpoint = torch.load(config.checkpoint)
+        start_epoch = checkpoint['epoch'] + 1
+        print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
+        model = checkpoint['model']
+        optimizer = checkpoint['optimizer']
+    
+    print("loading images")
+  
+    images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "train", limit=10)
+    print("%d images has been retrieved" %len(images))
+    # set_trace()
+
+    
+    print("finish loading images")
+
+    train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
+    
+    train(config, train_dataset, model, optimizer, start_epoch)

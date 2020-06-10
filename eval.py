@@ -4,9 +4,14 @@ from tqdm import tqdm
 from pprint import PrettyPrinter
 import numpy as np
 from pdb import set_trace
+from config import Config
+from dataload import retrieve_gt
 from matplotlib import pyplot as plt
+from datasets import FaceMaskDataset
 # Good formatting when printing the APs for each class and mAP
 pp = PrettyPrinter()
+
+
 
 # Ignore warnings
 import warnings
@@ -130,4 +135,32 @@ def evaluate(test_loader, model):
       
 
 if __name__ == '__main__':
+    config = Config()
+    # Testing Phase
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
+    checkpoint = "../checkpoint_ssd300.pth.tar"
+    
+    # Load model checkpoint that is to be evaluated
+    checkpoint = torch.load(checkpoint)
+    model = checkpoint['model']
+    model = model.to(device)
+    
+    #train(config, train_dataset)
+    print("loading images")
+
+    images, bnd_boxes, labels, difficults = retrieve_gt("../FaceMaskDataset", "val", limit=10)
+    print("%d images has been retrieved" %len(images))
+    # set_trace()
+    print("finish loading images")
+    test_dataset = FaceMaskDataset(images, bnd_boxes, labels, "test")
+    
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=config.batch_size, shuffle=False,
+                                               collate_fn=test_dataset.collate_fn, num_workers=config.workers,
+                                               pin_memory=True)  # note that we're passing the collate function here
+    
+    
+    
+    # Switch to eval mode
+    model.eval()
     evaluate(test_loader, model)
+

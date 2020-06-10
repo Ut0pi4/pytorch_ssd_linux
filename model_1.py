@@ -127,9 +127,9 @@ class VGGBase(nn.Module):
         # out = F.relu(self.conv5_3(out))  # (N, 512, 19, 19)
         # out = self.pool5(out)  # (N, 512, 19, 19), pool5 does not reduce dimensions
 
-        out = F.relu(self.conv6(out))  # (N, 1024, 19, 19)
+        output = F.relu(self.conv6(output))  # (N, 1024, 19, 19)
 
-        conv7_feats = F.relu(self.conv7(out))  # (N, 1024, 19, 19)
+        conv7_feats = F.relu(self.conv7(output))  # (N, 1024, 19, 19)
 
         # Lower-level feature maps
         return conv4_3_feats, conv7_feats

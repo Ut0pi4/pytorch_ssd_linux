@@ -65,6 +65,15 @@ Default parameters:
 
 Precision-Recall curves are saved in P_R_curve_face.png and P_R_curve_facemask.png
 
+## YOLOv1
+
+### Requirement
+To create a new conda environment for YOLOv1, please run:
+
+`conda create --name yolo python=3.7.7 pip`
+
+`conda env update --name yolo -f SSD_env.yml`
+
 <!---
 We will be implementing the [Single Shot Multibox Detector (SSD)](https://arxiv.org/abs/1512.02325), a popular, powerful, and especially nimble network for this task. The authors' original implementation can be found [here](https://github.com/weiliu89/caffe/tree/ssd).
 

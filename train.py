@@ -31,8 +31,6 @@ def train(config, train_dataset, model, optimizer, start_epoch):
     # global start_epoch, label_map, epoch, checkpoint, decay_lr_at
 
     # Initialize model or load checkpoint
-    # set_trace()
-    
 
     # Move to default device
     model = model.to(config.device)

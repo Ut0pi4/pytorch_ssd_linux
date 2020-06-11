@@ -18,29 +18,6 @@ pp = PrettyPrinter()
 import warnings
 warnings.filterwarnings("ignore")
 
-# Parameters
-#data_folder = './'
-#keep_difficult = True  # difficult ground truth objects must always be considered in mAP calculation, because these objects DO exist!
-#batch_size = 64
-#workers = 4
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#checkpoint = './checkpoint_ssd300.pth.tar'
-
-# Load model checkpoint that is to be evaluated
-#checkpoint = torch.load(checkpoint)
-#model = checkpoint['model']
-#model = model.to(device)
-
-# Switch to eval mode
-#model.eval()
-
-# Load test data
-#test_dataset = PascalVOCDataset(data_folder,
-#                                split='test',
-#                                keep_difficult=keep_difficult)
-#test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False,
-#                                          collate_fn=test_dataset.collate_fn, num_workers=workers, pin_memory=True)
-
 
 def evaluate(test_loader, model):
     """

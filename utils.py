@@ -403,7 +403,7 @@ def transform(image, boxes, labels, split):
 
 
 
-def save_checkpoint(epoch, model, optimizer, checkpoint):
+def save_checkpoint(epoch, model, optimizer, checkpoint='../checkpoint_ssd300.pth.tar'):
     """
     Save model checkpoint.
 

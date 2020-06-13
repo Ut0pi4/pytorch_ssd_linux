@@ -110,14 +110,15 @@ if __name__ == '__main__':
     if not os.path.exists("./detect_results"):
         os.makedirs("./detect_results")
     for item in os.listdir(dataset_path): 
-        img_path = item
-        original_image = Image.open(img_path, mode='r')
-        original_image = original_image.convert('RGB')
-        # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
-        image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
+        if item.endswith(".jpg"): 
+            img_path = item
+            original_image = Image.open(img_path, mode='r')
+            original_image = original_image.convert('RGB')
+            # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
+            image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
 
-        
-        image_name = "./detect_results/annotated_"+str(i)+".png"
-        cv2.imwrite(image_name, image)
-        print("Save image ", i)
-        i += 1
+            
+            image_name = "./detect_results/annotated_"+str(i)+".png"
+            cv2.imwrite(image_name, image)
+            print("Save image ", i)
+            i += 1

@@ -105,11 +105,19 @@ if __name__ == '__main__':
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
-    img_path = args.image
-    original_image = Image.open(img_path, mode='r')
-    original_image = original_image.convert('RGB')
-    detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
-    image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
+    i=0
+    dataset_path = "../FaceMaskDataset/FaceMaskDataset/val/"
+    if not os.path.exists("./detect_results"):
+        os.makedir("./detect_results")
+    for item in os.listdir(dataset_path): 
+        img_path = args.image
+        original_image = Image.open(img_path, mode='r')
+        original_image = original_image.convert('RGB')
+        # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
+        image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
 
-    set_trace()
-    cv2.imwrite("label_image.png", image)
+        
+        image_name = "./detect_results/annotated_"+str(i)+".png"
+        cv2.imwrite(image_name, image)
+        print("Save image ", i)
+        i += 1

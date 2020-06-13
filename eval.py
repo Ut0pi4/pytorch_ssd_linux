@@ -145,11 +145,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="FaceMaskDetection")
     parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
     parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
+    parser.add_argument('--checkpoint', type=str, default="../checkpoint_ssd300.pth.tar", help='limit number of images.')
+    
     args = parser.parse_args()
     config = Config()
     # Testing Phase
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                                     
-    checkpoint = "../checkpoint_ssd300.pth.tar"
+    checkpoint = args.checkpoint
     
     # Load model checkpoint that is to be evaluated
     checkpoint = torch.load(checkpoint)

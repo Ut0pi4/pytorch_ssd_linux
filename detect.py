@@ -106,12 +106,13 @@ if __name__ == '__main__':
                                      std=[0.229, 0.224, 0.225])
 
     i=0
-    dataset_path = "../FaceMaskDataset/FaceMaskDataset/val/"
+    dataset_path = "../FaceMaskDataset/FaceMaskDataset/val"
     if not os.path.exists("./detect_results"):
         os.makedirs("./detect_results")
     for item in os.listdir(dataset_path): 
         if item.endswith(".jpg"): 
-            img_path = item
+            
+            img_path = os.path.join(dataset_path, item)
             original_image = Image.open(img_path, mode='r')
             original_image = original_image.convert('RGB')
             # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()

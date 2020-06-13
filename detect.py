@@ -1,6 +1,7 @@
 from torchvision import transforms
 from utils import *
 from PIL import Image, ImageDraw, ImageFont
+import argparse
 
 import cv2
 
@@ -81,9 +82,11 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="FaceMaskDetection")
 
+    parser.add_argument('--image', type=str, default='1_Handshaking_Handshaking_1_42.jpg', help='path to dataset.')
+    args = parser.parse_args()
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Load model checkpoint
     checkpoint = '../checkpoint_2.pth.tar'
@@ -91,6 +94,8 @@ if __name__ == '__main__':
     start_epoch = checkpoint['epoch'] + 1
     print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
     model = checkpoint['model']
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     model = model.to(device)
     model.eval()
 
@@ -100,7 +105,7 @@ if __name__ == '__main__':
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
-    img_path = '1_Handshaking_Handshaking_1_42.jpg'
+    img_path = args.image
     original_image = Image.open(img_path, mode='r')
     original_image = original_image.convert('RGB')
     detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()

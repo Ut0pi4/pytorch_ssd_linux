@@ -88,12 +88,12 @@ def evaluate(test_loader, model):
     print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
     #set_trace()
 
-    print("\nAPs[No Mask] (AP@.5): %.3f, APs[Mask] (AP@.5): %.3f" %(APs_dict["0.50"][0], APs_dict["0.50"][1]))
-    print("\nAPs[No Mask] (AP@.7): %.3f, APs[Mask] (AP@.7): %.3f" %(APs_dict["0.70"][0], APs_dict["0.70"][1]))
-    print("\nAPs[No Mask] (AP@.9): %.3f, APs[Mask] (AP@.9): %.3f" %(APs_dict["0.90"][0], APs_dict["0.90"][1]))
+    print("\nAPs[No Mask] (AP@.5): %.3f, APs[Mask] (AP@.5): %.3f" %(APs_dict["0.50"]["no_mask"], APs_dict["0.50"]["mask"]))
+    print("\nAPs[No Mask] (AP@.7): %.3f, APs[Mask] (AP@.7): %.3f" %(APs_dict["0.70"]["no_mask"], APs_dict["0.70"]["mask"]))
+    print("\nAPs[No Mask] (AP@.9): %.3f, APs[Mask] (AP@.9): %.3f" %(APs_dict["0.90"]["no_mask"], APs_dict["0.90"]["mask"]))
 
     mean_APs = [0, 0]
-    for i in range(2):
+    for i in ["no_mask", "mask"]:
         for item, values in APs_dict.item():
             mean_APs[i] += values[i]
         mean_APs[i] /= len(APs_dict)

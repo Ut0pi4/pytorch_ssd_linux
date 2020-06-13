@@ -82,7 +82,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
     plt.plot(x, batch_val_losses)
     plt.xlabel("Epochs")
     plt.ylabel("Validation Loss")
-
+    plt.tight_layout()
     fig.savefig("train_val_losses.jpg")
     
 

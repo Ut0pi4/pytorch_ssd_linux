@@ -110,7 +110,7 @@ if __name__ == '__main__':
     if not os.path.exists("./detect_results"):
         os.makedir("./detect_results")
     for item in os.listdir(dataset_path): 
-        img_path = args.image
+        img_path = item
         original_image = Image.open(img_path, mode='r')
         original_image = original_image.convert('RGB')
         # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()

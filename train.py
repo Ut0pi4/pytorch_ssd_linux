@@ -211,11 +211,11 @@ if __name__ == '__main__':
     
     parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
     parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
-    parser.add_argument('--epoch', type=int, default=30, help='limit number of images.')
+    parser.add_argument('--epochs', type=int, default=30, help='limit number of images.')
 
     args = parser.parse_args()
     config = Config()
-    config.epoch = args.epoch
+    config.epochs = args.epochs
     # Training Phase
     if config.checkpoint is None:
         start_epoch = 0

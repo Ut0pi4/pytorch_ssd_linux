@@ -179,7 +179,7 @@ def val_one_epoch(config, val_loader, model, criterion, epoch):
                 print('Epoch: [{0}][{1}/{2}]\t'
                       'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                       'Data Time {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                      'Validation Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(epoch, i, len(train_loader),
+                      'Validation Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(epoch, i, len(val_loader),
                                                                       batch_time=batch_time,
                                                                       data_time=data_time, loss=losses))
         del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored

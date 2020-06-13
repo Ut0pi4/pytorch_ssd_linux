@@ -69,6 +69,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
         # Save checkpoint
         save_checkpoint(epoch, model, optimizer)
 
+    set_trace()
     x = np.arange(1, len(batch_train_losses) + 1)
     fig = plt.figure()
     plt.subplot(121)
@@ -210,10 +211,11 @@ if __name__ == '__main__':
     
     parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
     parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
-    
+    parser.add_argument('--epoch', type=int, default=30, help='limit number of images.')
+
     args = parser.parse_args()
     config = Config()
-    
+    config.epoch = args.epoch
     # Training Phase
     if config.checkpoint is None:
         start_epoch = 0

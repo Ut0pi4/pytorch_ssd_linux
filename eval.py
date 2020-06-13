@@ -96,7 +96,6 @@ def evaluate(test_loader, model):
     j = 0
     for i in ["no_mask", "mask"]:
         for item, values in APs_dict.items():
-            set_trace()
             mean_APs[j] += values[i]
         mean_APs[j] /= len(APs_dict)
         j += 1

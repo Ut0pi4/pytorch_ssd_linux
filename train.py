@@ -68,8 +68,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
               epoch=epoch))
         # Save checkpoint
         save_checkpoint(epoch, model, optimizer)
-
-    set_trace()
+        
     x = np.arange(1, len(batch_train_losses) + 1)
     fig = plt.figure()
     plt.subplot(121)

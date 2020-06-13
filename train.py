@@ -219,7 +219,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     config = Config()
     config.epochs = args.epochs
-    config.device = args.device
+    # config.device = args.device
     config.checkpoint = args.checkpoint
     config.batch_size = args.batch_size
  

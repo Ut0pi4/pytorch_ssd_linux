@@ -68,7 +68,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
               epoch=epoch))
         # Save checkpoint
         save_checkpoint(epoch, model, optimizer)
-        
+
     x = np.arange(1, len(batch_train_losses) + 1)
     fig = plt.figure()
     plt.subplot(121)
@@ -215,6 +215,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     config = Config()
     config.epochs = args.epochs
+    config.device = "cuda:0"
+
     # Training Phase
     if config.checkpoint is None:
         start_epoch = 0

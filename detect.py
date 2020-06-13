@@ -107,8 +107,9 @@ if __name__ == '__main__':
 
     i=0
     dataset_path = "../FaceMaskDataset/FaceMaskDataset/val"
-    if not os.path.exists("./detect_results_2"):
-        os.makedirs("./detect_results_2")
+    dest = "./detect_results_2"
+    if not os.path.exists(dest):
+        os.makedirs(dest)
     for item in os.listdir(dataset_path): 
         if item.endswith(".jpg"): 
             
@@ -119,7 +120,7 @@ if __name__ == '__main__':
             image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
 
             
-            image_name = "./detect_results/annotated_"+str(i)+".png"
+            image_name = dest + "/annotated_"+str(i)+".png"
             # cv2.imwrite(image_name, image)
             image.save(image_name)
             print("Save image ", i)

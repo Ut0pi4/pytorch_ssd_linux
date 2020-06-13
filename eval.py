@@ -157,9 +157,9 @@ if __name__ == '__main__':
     model = model.to(device)
     
     #train(config, train_dataset)
-    print("loading images")
+    print("loading test images")
 
-    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "val", limit=args.limit)
+    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "test", limit=args.limit)
     print("%d images has been retrieved" %len(images))
     # set_trace()
     print("finish loading images")

@@ -12,7 +12,6 @@ from datasets import FaceMaskDataset
 from utils import *
 from dataload import retrieve_gt
 #from eval import evaluate
-import tensorflow as tf
 from pdb import set_trace
 from dataload import retrieve_gt
 import os
@@ -24,7 +23,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def train(config, train_dataset, model, optimizer, start_epoch):
+def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
     """
     Training.
     """
@@ -43,25 +42,29 @@ def train(config, train_dataset, model, optimizer, start_epoch):
                                                collate_fn=train_dataset.collate_fn, num_workers=config.workers,
                                                pin_memory=True)  # note that we're passing the collate function here
 
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True,
+                                               collate_fn=train_dataset.collate_fn, num_workers=config.workers,
+                                               pin_memory=True)  # note that we're passing the collate function here
 
     epochs = config.epochs
 
-
+    batch_train_losses = []
+    batch_val_losses = []
     # Epochs
     print("start training....")
     for epoch in range(start_epoch, epochs):
 
 
         # One epoch's training
-        train_one_epoch(config, train_loader=train_loader,
+        batch_train_losses.append(train_one_epoch(config, train_loader=train_loader,
               model=model,
               criterion=criterion,
               optimizer=optimizer,
-              epoch=epoch)
-        val_one_epoch(config, val_loader=val_loader, 
+              epoch=epoch))
+        batch_val_losses.append(val_one_epoch(config, val_loader=val_loader, 
               model=model, 
               criterion=criterion, 
-              epoch=epoch)
+              epoch=epoch))
         # Save checkpoint
         save_checkpoint(epoch, model, optimizer)
 
@@ -84,6 +87,7 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
     losses = AverageMeter()  # loss
 
     start = time.time()
+    loss_sum = 0
     
     # Batches
     # for i, (images, boxes, labels, _) in enumerate(train_loader):
@@ -104,7 +108,7 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
         # Backward prop.
         optimizer.zero_grad()
         loss.backward()
-
+        loss_sum += loss
 
         # Update model
         optimizer.step()
@@ -123,6 +127,7 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
                                                                   batch_time=batch_time,
                                                                   data_time=data_time, loss=losses))
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
+    return loss_sum.item() / len(train_loader)
 
 def val_one_epoch(config, val_loader, model, criterion, epoch):
     """
@@ -142,7 +147,8 @@ def val_one_epoch(config, val_loader, model, criterion, epoch):
     losses = AverageMeter()  # loss
 
     start = time.time()
-    
+    loss_sum = 0
+
     with torch.no_grad():
         # Batches
         # for i, (images, boxes, labels, _) in enumerate(train_loader):
@@ -160,13 +166,8 @@ def val_one_epoch(config, val_loader, model, criterion, epoch):
             # Loss
             loss = criterion(predicted_locs, predicted_scores, boxes, labels)  # scalar
 
-            # Backward prop.
-            optimizer.zero_grad()
-            loss.backward()
+            loss_sum += loss
 
-
-            # Update model
-            optimizer.step()
 
             losses.update(loss.item(), images.size(0))
             batch_time.update(time.time() - start)
@@ -182,6 +183,7 @@ def val_one_epoch(config, val_loader, model, criterion, epoch):
                                                                       batch_time=batch_time,
                                                                       data_time=data_time, loss=losses))
         del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
+        return loss_sum.item() / len(val_loader)
     
 if __name__ == '__main__':
 
@@ -217,7 +219,7 @@ if __name__ == '__main__':
         model = checkpoint['model']
         optimizer = checkpoint['optimizer']
     
-    print("loading images")
+    print("loading training images")
     
     images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "train", limit=args.limit)
     print("%d images has been retrieved" %len(images))
@@ -227,5 +229,16 @@ if __name__ == '__main__':
     print("finish loading images")
     
     train_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
+
+    print("loading val images")
     
-    train(config, train_dataset, model, optimizer, start_epoch)
+    images, bnd_boxes, labels, difficults = retrieve_gt(args.dest, "val", limit=args.limit)
+    print("%d images has been retrieved" %len(images))
+    # set_trace()
+    
+    
+    print("finish loading images")
+
+    val_dataset = FaceMaskDataset(images, bnd_boxes, labels, "train")
+    
+    train(config, train_dataset, val_dataset, model, optimizer, start_epoch)

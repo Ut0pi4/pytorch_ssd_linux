@@ -1,11 +1,7 @@
 
 #from eval import evaluate
-import tensorflow as tf
-from pdb import set_trace
-from dataload import retrieve_gt
-import os
+
 from utils import *
-from datasets import FaceMaskDataset
 
 
 # Ignore warnings

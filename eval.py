@@ -93,11 +93,13 @@ def evaluate(test_loader, model):
     print("\nAPs[No Mask] (AP@.9): %.3f, APs[Mask] (AP@.9): %.3f" %(APs_dict["0.90"]["no_mask"], APs_dict["0.90"]["mask"]))
 
     mean_APs = [0, 0]
+    j = 0
     for i in ["no_mask", "mask"]:
         for item, values in APs_dict.items():
             set_trace()
-            mean_APs[i] += values[i]
-        mean_APs[i] /= len(APs_dict)
+            mean_APs[j] += values[i]
+        mean_APs[j] /= len(APs_dict)
+        j += 1
     print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
 
     fig = plt.figure(figsize=(12,9))

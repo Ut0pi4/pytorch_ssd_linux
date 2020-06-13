@@ -108,7 +108,7 @@ if __name__ == '__main__':
     i=0
     dataset_path = "../FaceMaskDataset/FaceMaskDataset/val/"
     if not os.path.exists("./detect_results"):
-        os.makedir("./detect_results")
+        os.makedirs("./detect_results")
     for item in os.listdir(dataset_path): 
         img_path = item
         original_image = Image.open(img_path, mode='r')

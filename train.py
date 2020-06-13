@@ -221,7 +221,7 @@ if __name__ == '__main__':
     config.checkpoint = args.checkpoint
 
     # Training Phase
-    if config.checkpoint is None and not os.path.exists(config.checkpoint):
+    if config.checkpoint is None or not os.path.exists(config.checkpoint):
         start_epoch = 0
         model = SSD300(n_classes=config.n_classes)
         # set_trace()

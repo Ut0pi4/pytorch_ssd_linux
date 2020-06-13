@@ -120,6 +120,7 @@ if __name__ == '__main__':
 
             
             image_name = "./detect_results/annotated_"+str(i)+".png"
-            cv2.imwrite(image_name, image)
+            # cv2.imwrite(image_name, image)
+            image.save(image_name)
             print("Save image ", i)
             i += 1

@@ -77,7 +77,7 @@ def evaluate(test_loader, model):
             mAPs[threshold] = mAP 
             precisions_dict[threshold] = precisions
             APs_dict[threshold] = APs
-    set_trace()
+    # set_trace()
     # Print AP for each class
     print("\nMean Average Precision (mAP@.5): %.3f" % mAPs["0.50"])
     #set_trace()

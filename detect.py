@@ -124,3 +124,5 @@ if __name__ == '__main__':
             image.save(image_name)
             print("Save image ", i)
             i += 1
+            if i >= 100:
+                break

@@ -38,6 +38,7 @@ def evaluate(test_loader, model):
     true_labels = list()
     # true_difficulties = list()  # it is necessary to know which objects are 'difficult', see 'calculate_mAP' in utils.py
     precisions_dict = {}
+    APs_dict = {}
     with torch.no_grad():
         # Batches
         #for i, (images, boxes, labels, difficulties) in enumerate(tqdm(test_loader, desc='Evaluating')):
@@ -75,9 +76,9 @@ def evaluate(test_loader, model):
             
             mAPs[threshold] = mAP 
             precisions_dict[threshold] = precisions
+            APs_dict[threshold] = APs
 
     # Print AP for each class
-    pp.pprint(APs)
     print("\nMean Average Precision (mAP@.5): %.3f" % mAPs["0.50"])
     #set_trace()
     print("\nMean Average Precision (mAP@.7): %.3f" % mAPs["0.70"])
@@ -86,7 +87,18 @@ def evaluate(test_loader, model):
     mean_mAPs = sum(mAPs.values())/len(mAPs)
     print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
     #set_trace()
-    
+
+    print("\nAPs[No Mask] (AP@.5): %.3f, APs[Mask] (AP@.5): %.3f" %(APs_dict["0.50"][0], APs_dict["0.50"][1]))
+    print("\nAPs[No Mask] (AP@.7): %.3f, APs[Mask] (AP@.7): %.3f" %(APs_dict["0.70"][0], APs_dict["0.70"][1]))
+    print("\nAPs[No Mask] (AP@.9): %.3f, APs[Mask] (AP@.9): %.3f" %(APs_dict["0.90"][0], APs_dict["0.90"][1]))
+
+    mean_APs = [0, 0]
+    for i in range(2):
+        for item, values in APs_dict.item():
+            mean_APs[i] += values[i]
+        mean_APs[i] /= len(APs_dict)
+    print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
+
     fig = plt.figure(figsize=(12,9))
     i = 1
     #set_trace()

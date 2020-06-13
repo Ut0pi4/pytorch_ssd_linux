@@ -41,5 +41,5 @@ class Config():
         self.momentum = 0.9  # momentum
         self.weight_decay = 5e-4  # weight decay
         self.grad_clip = None  # clip if gradients are exploding, which may happen at larger batch sizes (sometimes at 32) - you will recognize it by a sorting error in the MuliBox loss calculation
-        self.epochs = 60
+        self.epochs = 30
 

@@ -17,7 +17,7 @@ from pdb import set_trace
 import glob
 from download_dataset import download_extract
 
-import tensorflow as tf
+
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
@@ -101,10 +101,11 @@ def data_loader(dataloader, i):
 
 def retrieve_gt(path, split, limit=0):
 
-  assert split in ["train", "val"]
+  assert split in ["train", "val", "test"]
   download_extract(path)
   
-  path = path + "/FaceMaskDataset/"
+  path = os.path.join(path, "FaceMaskDataset")
+  
   dataloader = load_data(data_dir = path)
 
   images = []
@@ -114,16 +115,22 @@ def retrieve_gt(path, split, limit=0):
   # set_trace()
   if split == "train":
   	i = 0
-  	N = 6120
+  	N = 6000
   	if limit:
   		N= limit
   elif split == "val":
-  	i = 6120
-  	N = len(dataloader)
+  	i = 6000
+  	N = 6240
   
   	if limit:
   		N = i + limit
-  
+  elif split == "test":
+  	i = 6240
+  	N = 7959
+
+  	if limit:
+  		N = i + limit
+  print("start retrieving data")
   while i < N:
   	img, bndbox, boxlabel, difficult = data_loader(dataloader, i)
   	i += 1
@@ -142,4 +149,4 @@ def retrieve_gt(path, split, limit=0):
   return images, bndboxes, boxlabels, difficults
 
 if __name__=="__main__":
-	images, bndboxes, boxlabels, difficults = retrieve_gt("../FaceMaskDataset/", "train")
+	images, bndboxes, boxlabels, difficults = retrieve_gt("../FaceMaskDataset/", "val")

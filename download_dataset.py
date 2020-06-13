@@ -13,7 +13,6 @@ import requests
 from pdb import set_trace
 import glob
 
-import tensorflow as tf
 import torch
 
 
@@ -23,15 +22,15 @@ SOURCE_URL = "https://cloud.tsinghua.edu.cn/d/af356cf803894d65b447/files/?p=%2FA
 
 def maybe_download(filename, work_directory):
 	"""Download the data from website, unless it's already here."""
-	if not tf.io.gfile.exists(work_directory):
-		tf.io.gfile.makedirs(work_directory)
+	if not os.path.exists(work_directory):
+		os.makedirs(work_directory)
 	filepath = os.path.join(work_directory, filename)
 	
-	if not tf.io.gfile.exists(filepath):
+	if not os.path.exists(filepath):
 		print("start downloading dataset...")
 		filepath, _ = urllib.request.urlretrieve(SOURCE_URL, filepath)
 		# filepath = download_file_from_google_drive(FILE_ID, filepath)
-	with tf.io.gfile.GFile(filepath) as f:
+	with open(filepath, "r") as f:
 		print('Successfully downloaded', filename)
 	return filepath
 
@@ -42,9 +41,9 @@ def extract_images(filename, work_directory):
 	
 	dest = work_directory + "/FaceMaskDataset/"
 	"""Extract the images into a 4D uint8 numpy array [index, y, x, depth]."""
-	if not tf.io.gfile.exists(dest):
+	if not os.path.exists(dest):
 		print('Extracting', filename)
-		tf.io.gfile.makedirs(dest)
+		os.makedirs(dest)
 	
 		with zipfile.ZipFile(filename, 'r') as zip_ref:
 			zip_ref.extractall(dest)

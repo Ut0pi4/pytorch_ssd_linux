@@ -86,7 +86,7 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Load model checkpoint
-    checkpoint = '../checkpoint_ssd300.pth.tar'
+    checkpoint = '../checkpoint_2.pth.tar'
     checkpoint = torch.load(checkpoint)
     start_epoch = checkpoint['epoch'] + 1
     print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
@@ -106,5 +106,5 @@ if __name__ == '__main__':
     detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
     image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
 
-    
+
     cv2.imwrite("label_image.png", image)

@@ -403,7 +403,7 @@ def transform(image, boxes, labels, split):
 
 
 
-def save_checkpoint(epoch, model, optimizer):
+def save_checkpoint(epoch, model, optimizer, checkpoint):
     """
     Save model checkpoint.
 
@@ -414,7 +414,7 @@ def save_checkpoint(epoch, model, optimizer):
     state = {'epoch': epoch,
              'model': model,
              'optimizer': optimizer}
-    filename = '../checkpoint_ssd300.pth.tar'
+    filename = checkpoint
     torch.save(state, filename)
 
 

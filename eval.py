@@ -101,7 +101,7 @@ def evaluate(test_loader, model):
         j += 1
     print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
 
-    fig = plt.figure(figsize=(9,15))
+    fig = plt.figure(figsize=(20,9))
     i = 1
     #set_trace()
     for threshold in ["0.50", "0.70", "0.90"]:
@@ -127,7 +127,7 @@ def evaluate(test_loader, model):
     print("Saved!")
     plt.close()
     
-    fig = plt.figure(figsize=(9,15))
+    fig = plt.figure(figsize=(20,9))
     i = 1
     #set_trace()
     for threshold in ["0.50", "0.70", "0.90"]:

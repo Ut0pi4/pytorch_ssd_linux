@@ -70,7 +70,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     true_boxes = torch.cat(true_boxes, dim=0)  # (n_objects, 4)
     true_labels = torch.cat(true_labels, dim=0)  # (n_objects)
     # true_difficulties = torch.cat(true_difficulties, dim=0)  # (n_objects)
-    set_trace()
+    # set_trace()
     assert true_images.size(0) == true_boxes.size(0) == true_labels.size(0)
 
     # Store all detections in a single continuous tensor while keeping track of the image it is from
@@ -81,7 +81,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     det_boxes = torch.cat(det_boxes, dim=0)  # (n_detections, 4)
     det_labels = torch.cat(det_labels, dim=0)  # (n_detections)
     det_scores = torch.cat(det_scores, dim=0)  # (n_detections)
-    set_trace()
+    # set_trace()
     assert det_images.size(0) == det_boxes.size(0) == det_labels.size(0) == det_scores.size(0)
 
     # Calculate APs for each class (except background)

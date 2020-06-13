@@ -1,5 +1,5 @@
 # Face Mask Detection
-
+<!---
 # Contents
 
 [***Objective***](https://github.com/Ut0pi4/pytorch_ssd_linux#objective)
@@ -17,7 +17,7 @@
 [***Inference***](https://github.com/Ut0pi4/pytorch_ssd_linux#inference)
 
 [***Frequently Asked Questions***](https://github.com/Ut0pi4/pytorch_ssd_linux#faqs)
-
+-->
 # Objective
 
 In this time of pandemic, people are constantly wearing masks while travelling outdoors. Hence, there is a need to detect faces with mask worn for security reasons. There are many methods to accomplish this objective. In particular, we will be exploring the SSD, YOLOv1 and YOLOv2. 

@@ -3,7 +3,8 @@ import torch
 import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
-
+from matplotlib import pyplot as plt
+import numpy as np
 import argparse
 # from model import SSD300, MultiBoxLoss
 from model import SSD300, MultiBoxLoss
@@ -67,6 +68,22 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
               epoch=epoch))
         # Save checkpoint
         save_checkpoint(epoch, model, optimizer)
+
+    x = np.arange(1, len(batch_train_losses) + 1)
+    fig = plt.figure()
+    plt.subplot(121)
+    plt.plot(x, batch_train_losses)
+    plt.xlabel("Epochs")
+    plt.ylabel("Train Loss")
+
+    x = np.arange(1, len(batch_val_losses) + 1)
+    plt.subplot(122)
+    plt.plot(x, batch_val_losses)
+    plt.xlabel("Epochs")
+    plt.ylabel("Validation Loss")
+
+    fig.save("train_val_losses")
+    
 
 
 def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
@@ -183,8 +200,10 @@ def val_one_epoch(config, val_loader, model, criterion, epoch):
                                                                       batch_time=batch_time,
                                                                       data_time=data_time, loss=losses))
         del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
-        return loss_sum.item() / len(val_loader)
+    return loss_sum.item() / len(val_loader)
     
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="FaceMaskDetection")

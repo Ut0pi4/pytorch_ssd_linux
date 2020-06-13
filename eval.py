@@ -95,6 +95,7 @@ def evaluate(test_loader, model):
     mean_APs = [0, 0]
     for i in ["no_mask", "mask"]:
         for item, values in APs_dict.items():
+            set_trace()
             mean_APs[i] += values[i]
         mean_APs[i] /= len(APs_dict)
     print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))

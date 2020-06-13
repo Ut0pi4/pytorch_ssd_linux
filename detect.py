@@ -2,7 +2,7 @@ from torchvision import transforms
 from utils import *
 from PIL import Image, ImageDraw, ImageFont
 
-
+import cv2
 
 
 def detect(original_image, min_score, max_overlap, top_k, suppress=None):
@@ -104,3 +104,7 @@ if __name__ == '__main__':
     original_image = Image.open(img_path, mode='r')
     original_image = original_image.convert('RGB')
     detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
+    image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
+
+    
+    cv2.imwrite("label_image.png", image)

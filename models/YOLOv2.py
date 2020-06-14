@@ -537,7 +537,7 @@ def train():
 
 
 # 7558
-dataloader = dataload_yolo.load_data('./data', train=False)
+dataloader = dataload_yolo.load_data('./FaceMaskDataset/FaceMaskDataset', train=False)
 def prediction(randpic=False):
     yolo, optimizer, scheduler = loadmodel(pretrained=True)
     picnum = 0

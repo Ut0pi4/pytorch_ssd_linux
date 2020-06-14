@@ -108,8 +108,8 @@ def evaluate(test_loader, model):
 	
 	fig_tps_fps = plt.figure(figsize=(20, 15))
 
-	x = np.arange(1, len(cumul_tps[0]))
-	y = np.arange(1, len(cumul_fps[0]))
+	x = np.arange(1, len(cumul_tps[0])+1)
+	y = np.arange(1, len(cumul_fps[0])+1)
 	plt.subplot(221)
 	plt.plot(x, cumul_tps[0], label="tps_no_masks")
 	plt.xlabel("n_objects")

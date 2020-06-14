@@ -55,6 +55,6 @@ def download_extract(dest):
 if __name__=="__main__":
 	parser = argparse.ArgumentParser(description="FaceMaskDetection")
 	
-	parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
+	parser.add_argument('--dest', type=str, default="./FaceMaskDataset", help='path to dataset.')
 	args = parser.parse_args()
 	download_extract(dest)

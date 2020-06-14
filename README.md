@@ -28,7 +28,7 @@ To download the dataset, please run the following code:
 
 `python download_dataset.py --dest=PATH_TO_DATASET`
 
-Default `dest`=`../FaceMaskDataset`
+Default `dest`=`./FaceMaskDataset`
 
 # Methodology
 
@@ -43,7 +43,7 @@ To create a new conda environment for SSD, please run:
 To train an SSD model, please run:
 
 `
-python train.py --dest=PATH_TO_DATASET
+python SSD/train.py --dest=PATH_TO_DATASET
                 --limit=NO_OF_IMAGES_TO_PROCESS
 `
 
@@ -55,7 +55,7 @@ Default parameters:
 To evaluate the model and calculate mAPs, please run:
 
 `
-python train.py --dest=PATH_TO_DATASET
+python SSD/train.py --dest=PATH_TO_DATASET
                 --limit=NO_OF_IMAGES_TO_PROCESS
 `
 
@@ -73,6 +73,8 @@ To create a new conda environment for YOLOv1, please run:
 `conda create --name yolo python=3.7.7 pip`
 
 `conda env update --name yolo -f SSD_env.yml`
+
+
 
 <!---
 We will be implementing the [Single Shot Multibox Detector (SSD)](https://arxiv.org/abs/1512.02325), a popular, powerful, and especially nimble network for this task. The authors' original implementation can be found [here](https://github.com/weiliu89/caffe/tree/ssd).

@@ -67,12 +67,13 @@ Precision-Recall curves are saved in P_R_curve_face.png and P_R_curve_facemask.p
 
 ## YOLOv1, YOLOv2 and Faster RCNN
 
+### NOTE: ON FASTER RCNN, WHILE WE MANAGED TO BUILD THIS MODEL AND IS ABLE TO TRAIN THE MODEL UNTIL THE END, THE RESULTS ARE NOT SATISFYING. HENCE, AFTER TAKING TWO WEEKS TO WORK ON THIS, WE WORK ON OTHER MODELS INSTEAD.
+
 ### Requirement
 To create a new conda environment for the remaining models, please run:
 
-`conda create --name yolo python=3.7.7 pip`
 
-`conda env update --name yolo -f SSD_env.yml`
+`conda env create --name yolo -f environment.yml`
 
 ### Download models
 If you do not wish to train the model, you can download the models for YOLOv1 and YOLOv2, by running the following code:

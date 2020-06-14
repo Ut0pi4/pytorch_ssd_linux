@@ -105,14 +105,6 @@ To create a new conda environment for the remaining models, please run:
 
 `conda env create --name yolo -f environment.yml`
 
-### Download models
-If you do not wish to train the model, you can download the models for YOLOv1 and YOLOv2, by running the following code:
-
-
-`python models/download_models.py --path=PATH_TO_MODELS`
-
-
-Default `path` is `"./"`.
 
 ### Download models and weights
 To download models and weights for YOLOv1 and YOLOv2, please run the following code:

@@ -88,6 +88,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
 
     cumul_tps = []
     cumul_fps = []
+    n_objects_class = []
     for c in range(1, n_classes):
         
         # Extract only objects with this class
@@ -95,7 +96,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
         true_class_boxes = true_boxes[true_labels == c]  # (n_class_objects, 4)
        
         n_objects = true_class_images.size(0)
-        
+        n_objects_class.append(n_objects)
         true_class_boxes_detected = torch.zeros((true_class_images.size(0)), dtype=torch.uint8).to(
             device)  # (n_class_objects)
         
@@ -181,7 +182,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     # Keep class-wise average precisions in a dictionary
     average_precisions = {rev_label_map[c + 1]: v for c, v in enumerate(average_precisions.tolist())}
     
-    return precisions_classes, average_precisions, mean_average_precision, cumul_tps, cumul_fps
+    return precisions_classes, average_precisions, mean_average_precision, cumul_tps, cumul_fps, n_objects_class
 
 # Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def xy_to_cxcy(xy):

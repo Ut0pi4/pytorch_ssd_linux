@@ -73,23 +73,20 @@ def evaluate(test_loader, model):
 		# APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, true_difficulties)
 		
 		for threshold in np.arange(0.5, 0.95, 0.05):  
-			precisions, APs, mAP, _, _ = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
+			precisions, APs, mAP, _, _, _ = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
 			threshold = "%.2f" %threshold
 			
 			mAPs[threshold] = mAP 
 			precisions_dict[threshold] = precisions
 			APs_dict[threshold] = APs
-	# set_trace()
-	# Print AP for each class
+
+
 	print("\nMean Average Precision (mAP@.5): %.3f" % mAPs["0.50"])
-	#set_trace()
 	print("\nMean Average Precision (mAP@.7): %.3f" % mAPs["0.70"])
-	#set_trace()
 	print("\nMean Average Precision (mAP@.9): %.3f" % mAPs["0.90"])
 	mean_mAPs = sum(mAPs.values())/len(mAPs)
 	print("\nMean Average Precision (mAP@[.5:.95]): %.3f" % mean_mAPs)
-	#set_trace()
-
+	
 	print("\nAPs[No Mask] (AP@.5): %.3f, APs[Mask] (AP@.5): %.3f" %(APs_dict["0.50"]["no_mask"], APs_dict["0.50"]["mask"]))
 	print("\nAPs[No Mask] (AP@.7): %.3f, APs[Mask] (AP@.7): %.3f" %(APs_dict["0.70"]["no_mask"], APs_dict["0.70"]["mask"]))
 	print("\nAPs[No Mask] (AP@.9): %.3f, APs[Mask] (AP@.9): %.3f" %(APs_dict["0.90"]["no_mask"], APs_dict["0.90"]["mask"]))
@@ -103,9 +100,10 @@ def evaluate(test_loader, model):
 		j += 1
 	print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
 
-	_, _, _, cumul_tps, cumul_fps = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, 0.5)
+	_, _, _, cumul_tps, cumul_fps, n_objects_class = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, 0.5)
 
-	
+	print("n_objects (no_mask)", n_objects_class[0])
+	print("n_objects (mask)", n_objects_class[1])
 	fig_tps_fps = plt.figure(figsize=(20, 15))
 
 	x1 = np.arange(1, len(cumul_tps[0])+1)

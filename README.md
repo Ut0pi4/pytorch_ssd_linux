@@ -109,6 +109,8 @@ To see some prediction results, please run the following code:
 
 `from models import YOLOv1`
 
+`from models.YOLOv1 import *`
+
 `YOLOv1.prediction()`
 
 This command will take the first 3 images from test set and make predictions.
@@ -123,6 +125,8 @@ To train the YOLOv2, please run the following code:
 
 `from models import YOLOv2`
 
+`from models.YOLOv2 import *`
+
 `YOLOv2.train()`
 
 ### Detect Results (YOLOv1)
@@ -131,6 +135,8 @@ To see some prediction results, please run the following code:
 `python`
 
 `from models import YOLOv2`
+
+`from models.YOLOv2 import *`
 
 `YOLOv2.prediction()`
 

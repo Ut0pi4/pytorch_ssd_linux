@@ -269,7 +269,7 @@ train_flag = 6000
 valid_flag = 6240
 test_flag = 7955
 inputsize = 448
-dataloader = dataload_yolo.load_data('./data')
+dataloader = dataload_yolo.load_data('./FaceMaskDataset/FaceMaskDataset')
 model = torchvision.models.googlenet(pretrained=True)
 
 S = 7

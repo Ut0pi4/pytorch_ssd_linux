@@ -431,7 +431,7 @@ lr = 1e-5
 train_flag = 6000
 valid_flag = 6240
 test_flag = 7955
-dataloader = dataload_yolo.load_data('./data')
+dataloader = dataload_yolo.load_data('./FaceMaskDataset/FaceMaskDataset')
 dirs = './'
 def loadmodel(pretrained=True):
     if pretrained == True:

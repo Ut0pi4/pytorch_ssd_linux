@@ -84,7 +84,8 @@ def detect(original_image, min_score, max_overlap, top_k, suppress=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="FaceMaskDetection")
 
-    parser.add_argument('--image', type=str, default='1_Handshaking_Handshaking_1_42.jpg', help='path to dataset.')
+    parser.add_argument('--limit', type=int, default=0, help='limit to number of pictures')
+    parser.add_argument('--image', type=str, default='nothing', help='image')
     args = parser.parse_args()
 
 
@@ -107,23 +108,39 @@ if __name__ == '__main__':
 
     i=0
     dataset_path = "../FaceMaskDataset/FaceMaskDataset/val"
-    dest = "./detect_results_2"
+    dest = "./detect_results"
     if not os.path.exists(dest):
         os.makedirs(dest)
-    for item in os.listdir(dataset_path): 
-        if item.endswith(".jpg"): 
-            
-            img_path = os.path.join(dataset_path, item)
-            original_image = Image.open(img_path, mode='r')
-            original_image = original_image.convert('RGB')
-            # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
-            image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
+    
+    N = len(os.listdir(dataset_path)) if args.limit==0 else args.limit
 
-            
-            image_name = dest + "/annotated_"+str(i)+".png"
-            # cv2.imwrite(image_name, image)
-            image.save(image_name)
-            print("Save image ", i)
-            i += 1
-            if i >= 100:
-                break
+    if args.image == "nothing":
+	    for item in os.listdir(dataset_path): 
+	        if item.endswith(".jpg"): 
+	            
+	            img_path = os.path.join(dataset_path, item)
+	            original_image = Image.open(img_path, mode='r')
+	            original_image = original_image.convert('RGB')
+	            # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
+	            image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
+
+	            
+	            image_name = dest + "/annotated_"+str(i)+".png"
+	            # cv2.imwrite(image_name, image)
+	            image.save(image_name)
+	            print("Save image ", i)
+	            i += 1
+	            if i >= N:
+	                break
+	else:
+		img_path = args.image
+        original_image = Image.open(img_path, mode='r')
+        original_image = original_image.convert('RGB')
+        # detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200).show()
+        image = detect(original_image, min_score=0.2, max_overlap=0.5, top_k=200)
+
+        
+        image_name = dest + "/annotated_"+str(i)+".png"
+        # cv2.imwrite(image_name, image)
+        image.save(image_name)
+        print("Save image ", i)

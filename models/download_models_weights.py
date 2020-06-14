@@ -39,7 +39,7 @@ def maybe_download(filename, work_directory, download_url):
 if __name__=="__main__":
 	parser = argparse.ArgumentParser(description="FaceMaskDetection")
 	
-	parser.add_argument('--dest', type=str, default="./models/", help='path to dataset.')
+	parser.add_argument('--dest', type=str, default="./", help='path to dataset.')
 	args = parser.parse_args()
 	maybe_download("modelYOLO.pkl", args.dest, SOURCE_URL_1)
 	maybe_download("modelYOLOv2.pkl", args.dest, SOURCE_URL_2)

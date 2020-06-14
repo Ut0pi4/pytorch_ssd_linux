@@ -950,8 +950,8 @@ def prediction(randpic=False):
 
 # In[ ]:
 
-if __name__== "__main__":
-    YOLOv2.__module__="my_YOLOv2"
+# if __name__== "__main__":
+#     YOLOv2.__module__="my_YOLOv2"
 
 
 

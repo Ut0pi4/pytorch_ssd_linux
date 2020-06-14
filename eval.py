@@ -101,57 +101,57 @@ def evaluate(test_loader, model):
         j += 1
     print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
 
-    fig = plt.figure(figsize=(10,3))
-    i = 1
-    #set_trace()
-    for threshold in ["0.50", "0.70", "0.90"]:
+    # fig = plt.figure(figsize=(10,3))
+    # i = 1
+    # #set_trace()
+    # for threshold in ["0.50", "0.70", "0.90"]:
         
         
-        x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        sub = "13"+str(i)
-        plt.subplot(sub)
-        precisions_dict[threshold][0] = precisions_dict[threshold][0].cpu().numpy()
-        label_ = "threshold_" + threshold
-        plt.step(x, precisions_dict[threshold][0], label=label_)
-        plt.xlabel("Recall")
-        plt.ylabel("Precision")
-        plt.legend()
+    #     x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    #     sub = "13"+str(i)
+    #     plt.subplot(sub)
+    #     precisions_dict[threshold][0] = precisions_dict[threshold][0].cpu().numpy()
+    #     label_ = "threshold_" + threshold
+    #     plt.step(x, precisions_dict[threshold][0], label=label_)
+    #     plt.xlabel("Recall")
+    #     plt.ylabel("Precision")
+    #     plt.legend()
             
-        print("plotted figure threshold "+threshold)
-        i = i + 1
-    # set_trace()
-    figure_name = "P_R_curve_face.png"
-    fig.tight_layout()
-    print("Saving to ", figure_name)
-    fig.savefig(figure_name)
-    print("Saved!")
-    plt.close()
+    #     print("plotted figure threshold "+threshold)
+    #     i = i + 1
+    # # set_trace()
+    # figure_name = "P_R_curve_face.png"
+    # fig.tight_layout()
+    # print("Saving to ", figure_name)
+    # fig.savefig(figure_name)
+    # print("Saved!")
+    # plt.close()
     
-    fig = plt.figure(figsize=(10,3))
-    i = 1
-    #set_trace()
-    for threshold in ["0.50", "0.70", "0.90"]:
+    # fig = plt.figure(figsize=(10,3))
+    # i = 1
+    # #set_trace()
+    # for threshold in ["0.50", "0.70", "0.90"]:
         
         
-        x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-        sub = "13"+str(i)
-        plt.subplot(sub)
-        precisions_dict[threshold][1] = precisions_dict[threshold][1].cpu().numpy()
-        label_ = "threshold_" + threshold
-        plt.step(x, precisions_dict[threshold][1], label=label_)
-        plt.xlabel("Recall")
-        plt.ylabel("Precision")
-        plt.legend()
+    #     x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    #     sub = "13"+str(i)
+    #     plt.subplot(sub)
+    #     precisions_dict[threshold][1] = precisions_dict[threshold][1].cpu().numpy()
+    #     label_ = "threshold_" + threshold
+    #     plt.step(x, precisions_dict[threshold][1], label=label_)
+    #     plt.xlabel("Recall")
+    #     plt.ylabel("Precision")
+    #     plt.legend()
             
-        print("plotted figure threshold "+threshold)
-        i = i + 1
-    # set_trace()
-    figure_name = "P_R_curve_facemask.png"
-    fig.tight_layout()
-    print("Saving to ", figure_name)
-    fig.savefig(figure_name)
-    print("Saved!")
-    plt.close()
+    #     print("plotted figure threshold "+threshold)
+    #     i = i + 1
+    # # set_trace()
+    # figure_name = "P_R_curve_facemask.png"
+    # fig.tight_layout()
+    # print("Saving to ", figure_name)
+    # fig.savefig(figure_name)
+    # print("Saved!")
+    # plt.close()
       
 
 if __name__ == '__main__':

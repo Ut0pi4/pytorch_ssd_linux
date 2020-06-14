@@ -77,9 +77,9 @@ To create a new conda environment for the remaining models, please run:
 ### Download models
 If you do not wish to train the model, you can download the models for YOLOv1 and YOLOv2, by running the following code:
 
-`
-python models/download_models.py --path=PATH_TO_MODELS
-`
+
+`python models/download_models.py --path=PATH_TO_MODELS`
+
 
 Default `path` is `"./"`.
 
@@ -95,62 +95,50 @@ Default `path` is `"./"`.
 ### Train (YOLOv1)
 To train the YOLOv1, please run the following code:
 
-`
-python
-`
-`
-from models import YOLOv1
-`
-`
-YOLOv1.train()
-`
+
+`python`
+
+`from models import YOLOv1`
+
+`YOLOv1.train()`
+
 ### Detect Results (YOLOv1)
 To see some prediction results, please run the following code:
-`
-python
-`
-`
-from models import YOLOv1
-`
-`
-YOLOv1.prediction()
-`
+
+`python`
+
+`from models import YOLOv1`
+
+`YOLOv1.prediction()`
+
 This command will take the first 3 images from test set and make predictions.
 To make random prediction of 3 images from test set, run:
 
-`
-YOLOv1.prediction(randpic=True)
-`
+`YOLOv1.prediction(randpic=True)`
 
 ### Train (YOLOv2)
 To train the YOLOv2, please run the following code:
 
-`
-python
-`
-`
-from models import YOLOv2
-`
-`
-YOLOv2.train()
-`
+`python`
+
+`from models import YOLOv2`
+
+`YOLOv2.train()`
+
 ### Detect Results (YOLOv1)
 To see some prediction results, please run the following code:
-`
-python
-`
-`
-from models import YOLOv2
-`
-`
-YOLOv2.prediction()
-`
+
+`python`
+
+`from models import YOLOv2`
+
+`YOLOv2.prediction()`
+
 This command will take the first 3 images from test set and make predictions.
 To make random prediction of 3 images from test set, run:
 
-`
-YOLOv2.prediction(randpic=True)
-`
+
+`YOLOv2.prediction(randpic=True)`
 
 
 <!---

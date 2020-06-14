@@ -5,7 +5,7 @@ import argparse
 
 import cv2
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def detect(original_image, min_score, max_overlap, top_k, suppress=None):
     """
     Detect objects in an image with a trained SSD300, and visualize the results.

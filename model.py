@@ -224,7 +224,7 @@ class AuxiliaryConvolutions(nn.Module):
 		# Higher-level feature maps
 		return conv8_2_feats, conv9_2_feats, conv10_2_feats, conv11_2_feats
 
-# taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 class PredictionConvolutions(nn.Module):
 	"""
 	Convolutions to predict class scores and bounding boxes using lower and higher-level feature maps.

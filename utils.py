@@ -20,7 +20,7 @@ distinct_colors = ['#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', '#911e
 label_color_map = {k: distinct_colors[i] for i, k in enumerate(label_map.keys())}
 
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def decimate(tensor, m):
     """
     Decimate a tensor by a factor 'm', i.e. downsample by keeping every 'm'th value.
@@ -40,7 +40,7 @@ def decimate(tensor, m):
     return tensor
 
 
-# def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, true_difficulties):
+# Slightly modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold):
     """
     Calculate the Mean Average Precision (mAP) of detected objects.
@@ -57,8 +57,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     """
     # set_trace()
     assert len(det_boxes) == len(det_labels) == len(det_scores) == len(true_boxes) == len(
-        true_labels) 
-        #== len(true_difficulties)  # these are all lists of tensors of the same length, i.e. number of images
+        true_labels)  # these are all lists of tensors of the same length, i.e. number of images
     n_classes = len(label_map)
 
     # Store all (true) objects in a single continuous tensor while keeping track of the image it is from
@@ -69,8 +68,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
         device)  # (n_objects), n_objects is the total no. of objects across all images
     true_boxes = torch.cat(true_boxes, dim=0)  # (n_objects, 4)
     true_labels = torch.cat(true_labels, dim=0)  # (n_objects)
-    # true_difficulties = torch.cat(true_difficulties, dim=0)  # (n_objects)
-    # set_trace()
+ 
     assert true_images.size(0) == true_boxes.size(0) == true_labels.size(0)
 
     # Store all detections in a single continuous tensor while keeping track of the image it is from
@@ -81,7 +79,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     det_boxes = torch.cat(det_boxes, dim=0)  # (n_detections, 4)
     det_labels = torch.cat(det_labels, dim=0)  # (n_detections)
     det_scores = torch.cat(det_scores, dim=0)  # (n_detections)
-    # set_trace()
+    
     assert det_images.size(0) == det_boxes.size(0) == det_labels.size(0) == det_scores.size(0)
 
     # Calculate APs for each class (except background)
@@ -92,14 +90,9 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
         # Extract only objects with this class
         true_class_images = true_images[true_labels == c]  # (n_class_objects)
         true_class_boxes = true_boxes[true_labels == c]  # (n_class_objects, 4)
-        # true_class_difficulties = true_difficulties[true_labels == c]  # (n_class_objects)
-        #n_easy_class_objects = (1 - true_class_difficulties).sum().item()  # ignore difficult objects
+       
         n_objects = true_class_images.size(0)
-        # Keep track of which true objects with this class have already been 'detected'
-        # So far, none
-        # set_trace()
-        #true_class_boxes_detected = torch.zeros((true_class_difficulties.size(0)), dtype=torch.uint8).to(
-        #    device)  # (n_class_objects)
+        
         true_class_boxes_detected = torch.zeros((true_class_images.size(0)), dtype=torch.uint8).to(
             device)  # (n_class_objects)
         
@@ -127,7 +120,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
 
             # Find objects in the same image with this class, their difficulties, and whether they have been detected before
             object_boxes = true_class_boxes[true_class_images == this_image]  # (n_class_objects_in_img)
-            #object_difficulties = true_class_difficulties[true_class_images == this_image]  # (n_class_objects_in_img)
+            
             # If no such object in this image, then the detection is a false positive
             if object_boxes.size(0) == 0:
                 false_positives[d] = 1
@@ -144,15 +137,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
 
             # If the maximum overlap is greater than the threshold of 0.5, it's a match
             if max_overlap.item() > threshold:
-                # If the object it matched with is 'difficult', ignore it
-                #if object_difficulties[ind] == 0:
-                    # If this object has already not been detected, it's a true positive
-                    #if true_class_boxes_detected[original_ind] == 0:
-                     #   true_positives[d] = 1
-                     #   true_class_boxes_detected[original_ind] = 1  # this object has now been detected/accounted for
-                    # Otherwise, it's a false positive (since this object is already accounted for)
-                    #else:
-                     #   false_positives[d] = 1
+               
                 if true_class_boxes_detected[original_ind] == 0:
                     true_positives[d] = 1
                     true_class_boxes_detected[original_ind] = 1  # this object has now been detected/accounted for
@@ -168,8 +153,8 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
         cumul_false_positives = torch.cumsum(false_positives, dim=0)  # (n_class_detections)
         cumul_precision = cumul_true_positives / (
                 cumul_true_positives + cumul_false_positives + 1e-10)  # (n_class_detections)
-        #cumul_recall = cumul_true_positives / n_easy_class_objects  # (n_class_detections)
         
+
         cumul_recall = cumul_true_positives / n_objects
         
 
@@ -194,7 +179,7 @@ def calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, th
     
     return precisions_classes, average_precisions, mean_average_precision
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def xy_to_cxcy(xy):
     """
     Convert bounding boxes from boundary coordinates (x_min, y_min, x_max, y_max) to center-size coordinates (c_x, c_y, w, h).
@@ -205,7 +190,7 @@ def xy_to_cxcy(xy):
     return torch.cat([(xy[:, 2:] + xy[:, :2]) / 2,  # c_x, c_y
                       xy[:, 2:] - xy[:, :2]], 1)  # w, h
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def cxcy_to_xy(cxcy):
     """
     Convert bounding boxes from center-size coordinates (c_x, c_y, w, h) to boundary coordinates (x_min, y_min, x_max, y_max).
@@ -217,6 +202,7 @@ def cxcy_to_xy(cxcy):
                       cxcy[:, :2] + (cxcy[:, 2:] / 2)], 1)  # x_max, y_max
 
 
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def cxcy_to_gcxgcy(cxcy, priors_cxcy):
     """
     Encode bounding boxes (that are in center-size form) w.r.t. the corresponding prior boxes (that are in center-size form).
@@ -238,6 +224,7 @@ def cxcy_to_gcxgcy(cxcy, priors_cxcy):
                       torch.log(cxcy[:, 2:] / priors_cxcy[:, 2:]) * 5], 1)  # g_w, g_h
 
 
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def gcxgcy_to_cxcy(gcxgcy, priors_cxcy):
     """
     Decode bounding box coordinates predicted by the model, since they are encoded in the form mentioned above.
@@ -255,6 +242,7 @@ def gcxgcy_to_cxcy(gcxgcy, priors_cxcy):
                       torch.exp(gcxgcy[:, 2:] / 5) * priors_cxcy[:, 2:]], 1)  # w, h
 
 
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def find_intersection(set_1, set_2):
     """
     Find the intersection of every box combination between two sets of boxes that are in boundary coordinates.
@@ -270,7 +258,7 @@ def find_intersection(set_1, set_2):
     intersection_dims = torch.clamp(upper_bounds - lower_bounds, min=0)  # (n1, n2, 2)
     return intersection_dims[:, :, 0] * intersection_dims[:, :, 1]  # (n1, n2)
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def find_overlap(set_1, set_2):
     """
     Find the Jaccard Overlap (IoU) of every box combination between two sets of boxes that are in boundary coordinates.
@@ -294,31 +282,7 @@ def find_overlap(set_1, set_2):
     return intersection / union  # (n1, n2)
 
 
-# Some augmentation functions below have been adapted from
-# From https://github.com/amdegroot/ssd.pytorch/blob/master/utils/augmentations.py
-
-
-
-def flip(image, boxes):
-    """
-    Flip image horizontally.
-
-    :param image: image, a PIL Image
-    :param boxes: bounding boxes in boundary coordinates, a tensor of dimensions (n_objects, 4)
-    :return: flipped image, updated bounding box coordinates
-    """
-    # Flip image
-    new_image = FT.hflip(image)
-
-    # Flip boxes
-    new_boxes = boxes
-    new_boxes[:, 0] = image.width - boxes[:, 0] - 1
-    new_boxes[:, 2] = image.width - boxes[:, 2] - 1
-    new_boxes = new_boxes[:, [2, 1, 0, 3]]
-
-    return new_image, new_boxes
-
-
+# Slightly modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def resize(image, boxes, dims=(300, 300), return_percent_coords=True):
     """
     Resize image. For the SSD300, resize to (300, 300).
@@ -345,7 +309,7 @@ def resize(image, boxes, dims=(300, 300), return_percent_coords=True):
     return new_image, new_boxes
 
 
-
+# Heavily modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def transform(image, boxes, labels, split):
     """
     Apply the transformations above.
@@ -367,31 +331,6 @@ def transform(image, boxes, labels, split):
     new_image = image
     new_boxes = boxes
     new_labels = labels
-    # new_difficulties = difficulties
-    # Skip the following operations for evaluation/testing
-    # if split == 'TRAIN':
-    # if split == "train":
-        # A series of photometric distortions in random order, each with 50% chance of occurrence, as in Caffe repo
-        # new_image = photometric_distort(new_image)
-
-        # Convert PIL image to Torch tensor
-        # new_image = FT.to_tensor(new_image)
-
-        # Expand image (zoom out) with a 50% chance - helpful for training detection of small objects
-        # Fill surrounding space with the mean of ImageNet data that our base VGG was trained on
-        # if random.random() < 0.5:
-        #     new_image, new_boxes = expand(new_image, boxes, filler=mean)
-
-        # Randomly crop image (zoom in)
-        # new_image, new_boxes, new_labels, new_difficulties = random_crop(new_image, new_boxes, new_labels,
-        #                                                                  new_difficulties)
-
-        # Convert Torch tensor to PIL image
-        # new_image = FT.to_pil_image(new_image)
-
-        # Flip image with a 50% chance
-        # if random.random() < 0.5:
-        #     new_image, new_boxes = flip(new_image, new_boxes)
 
     # Resize image to (300, 300) - this also converts absolute boundary coordinates to their fractional form
     new_image, new_boxes = resize(new_image, new_boxes, dims=(300, 300))
@@ -407,7 +346,7 @@ def transform(image, boxes, labels, split):
 
 
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def save_checkpoint(epoch, model, optimizer, checkpoint='../checkpoint_ssd300.pth.tar'):
     """
     Save model checkpoint.
@@ -422,7 +361,7 @@ def save_checkpoint(epoch, model, optimizer, checkpoint='../checkpoint_ssd300.pt
     filename = checkpoint
     torch.save(state, filename)
 
-
+# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 class AverageMeter(object):
     """
     Keeps track of most recent, average, sum, and count of a metric.

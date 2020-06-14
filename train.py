@@ -23,7 +23,7 @@ cudnn.benchmark = True
 import warnings
 warnings.filterwarnings("ignore")
 
-
+# Slightly modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
     """
     Training.
@@ -85,7 +85,7 @@ def train(config, train_dataset, val_dataset, model, optimizer, start_epoch):
     fig.savefig("train_val_losses.jpg")
     
 
-
+# Slightly modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
     """
     One epoch's training.
@@ -146,11 +146,12 @@ def train_one_epoch(config, train_loader, model, criterion, optimizer, epoch):
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
     return loss_sum.item() / len(train_loader)
 
+# Heavily modified from train_one_epoch of https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def val_one_epoch(config, val_loader, model, criterion, epoch):
     """
     One epoch's training.
 
-    :param train_loader: DataLoader for training data
+    :param val_loader: DataLoader for validation data
     :param model: model
     :param criterion: MultiBox loss
     :param optimizer: optimizer

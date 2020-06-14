@@ -18,7 +18,7 @@ pp = PrettyPrinter()
 import warnings
 warnings.filterwarnings("ignore")
 
-
+# Heavily modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 def evaluate(test_loader, model):
     """
     Evaluate.

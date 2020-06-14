@@ -108,28 +108,31 @@ def evaluate(test_loader, model):
 	
 	fig_tps_fps = plt.figure(figsize=(20, 15))
 
-	x = np.arange(1, len(cumul_tps[0])+1)
-	y = np.arange(1, len(cumul_fps[0])+1)
+	x1 = np.arange(1, len(cumul_tps[0])+1)
+	x2 = np.arange(1, len(cumul_tps[1])+1)
+	y1 = np.arange(1, len(cumul_fps[0])+1)
+	y2 = np.arange(1, len(cumul_fps[1])+1)
+	
 	plt.subplot(221)
-	plt.plot(x, cumul_tps[0], label="tps_no_masks")
+	plt.plot(x1, cumul_tps[0], label="tps_no_masks")
 	plt.xlabel("n_objects")
 	plt.ylabel("cumul_tps")
 	plt.legend()
 
 	plt.subplot(222)
-	plt.plot(x, cumul_tps[1], label="tps_masks")
+	plt.plot(x2, cumul_tps[1], label="tps_masks")
 	plt.xlabel("n_objects")
 	plt.ylabel("cumul_tps")
 	plt.legend()
 	
 	plt.subplot(223)
-	plt.plot(y, cumul_fps[0], label="fps_no_masks")
+	plt.plot(y1, cumul_fps[0], label="fps_no_masks")
 	plt.xlabel("n_objects")
 	plt.ylabel("cumul_fps")
 	plt.legend()
 
 	plt.subplot(224)
-	plt.plot(y, cumul_fps[1], label="fps_masks")
+	plt.plot(y2, cumul_fps[1], label="fps_masks")
 	plt.xlabel("n_objects")
 	plt.ylabel("cumul_fps")
 	plt.legend()

@@ -359,7 +359,7 @@ class PredictionConvolutions(nn.Module):
 		return locs, classes_scores
 
 
-# Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
+# Slightly modified from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
 class SSD300(nn.Module):
 	"""
 	The SSD300 network - encapsulates the base VGG network, auxiliary, and prediction convolutions.

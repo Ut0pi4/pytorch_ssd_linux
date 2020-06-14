@@ -26,7 +26,7 @@ def maybe_download(filename, work_directory):
 		os.makedirs(work_directory)
 	filepath = os.path.join(work_directory, filename)
 	
-	if not os.path..exists(filepath):
+	if not os.path.exists(filepath):
 		print("start downloading model...")
 		filepath, _ = urllib.request.urlretrieve(SOURCE_URL, filepath)
 		# filepath = download_file_from_google_drive(FILE_ID, filepath)

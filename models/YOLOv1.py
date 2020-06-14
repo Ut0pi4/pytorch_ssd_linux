@@ -779,6 +779,7 @@ def prediction(randpic=False):
 
 # In[ ]:
 
-
+if __name__== "__main__":
+    YOLOv1.__module__="my_YOLO"
 
 

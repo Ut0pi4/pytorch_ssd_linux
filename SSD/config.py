@@ -11,9 +11,7 @@ warnings.filterwarnings("ignore")
 class Config():
 
     def __init__(self):
-        # Data parameters
-        self.data_folder = '../FaceMaskDataset'  # folder with data files
-        self.keep_difficult = True  # use objects considered difficult to detect?
+        
         
         # Model parameters
         # Not too many here since the SSD300 has a very specific structure
@@ -21,7 +19,7 @@ class Config():
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         # Learning parameters
-        path = "../checkpoint_ssd300.pth.tar"
+        path = "./checkpoint_ssd300.pth.tar"
         if os.path.exists(path):
           self.checkpoint = path  # path to model checkpoint, None if none
         else:

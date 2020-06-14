@@ -36,9 +36,11 @@ def evaluate(test_loader, model):
     det_scores = list()
     true_boxes = list()
     true_labels = list()
-    # true_difficulties = list()  # it is necessary to know which objects are 'difficult', see 'calculate_mAP' in utils.py
+    
     precisions_dict = {}
     APs_dict = {}
+    mAPs = {}
+
     with torch.no_grad():
         # Batches
         #for i, (images, boxes, labels, difficulties) in enumerate(tqdm(test_loader, desc='Evaluating')):
@@ -69,9 +71,9 @@ def evaluate(test_loader, model):
 
         # Calculate mAP
         # APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, true_difficulties)
-        mAPs = {}
+        
         for threshold in np.arange(0.5, 0.95, 0.05):  
-            precisions, APs, mAP = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
+            precisions, APs, mAP, _, _ = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, threshold)
             threshold = "%.2f" %threshold
             
             mAPs[threshold] = mAP 
@@ -100,6 +102,44 @@ def evaluate(test_loader, model):
         mean_APs[j] /= len(APs_dict)
         j += 1
     print("\nAPs[No Mask] (AP@[.5:.95]): %.3f, APs[Mask] (AP@[.5:.95]): %.3f" %(mean_APs[0], mean_APs[1]))
+
+    _, _, _, cumul_tps, cumul_fps = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, 0.5)
+
+    for i in range():
+        for j in range():
+            for k in range():
+    fig_tps_fps = plt.figure(figsize=(20, 15))
+
+    x = np.arange(1, len(cumul_tps[0]))
+    y = np.arange(1, len(cumul_fps[0]))
+    plt.subplot(221)
+    plt.plot(x, cumul_tps[0], label="tps_no_masks")
+    plt.xlabel("n_objects")
+    plt.ylabel("cumul_tps")
+    plt.legend()
+
+    plt.subplot(222)
+    plt.plot(x, cumul_tps[1], label="tps_masks")
+    plt.xlabel("n_objects")
+    plt.ylabel("cumul_tps")
+    plt.legend()
+    
+    plt.subplot(223)
+    plt.plot(y, cumul_fps[0], label="fps_no_masks")
+    plt.xlabel("n_objects")
+    plt.ylabel("cumul_fps")
+    plt.legend()
+
+    plt.subplot(224)
+    plt.plot(y, cumul_fps[1], label="fps_masks")
+    plt.xlabel("n_objects")
+    plt.ylabel("cumul_fps")
+    plt.legend()
+    
+    plt.tight_layout()
+    fig_tps_fps.savefig("tps_fps.png")
+    print("Saved!")
+    plt.close()
 
     # fig = plt.figure(figsize=(10,3))
     # i = 1

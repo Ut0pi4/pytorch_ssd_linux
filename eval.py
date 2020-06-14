@@ -102,44 +102,14 @@ def evaluate(test_loader, model):
 
 	_, _, _, cumul_tps, cumul_fps, n_objects_class = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, 0.5)
 
-	print("n_objects (no_mask)", n_objects_class[0])
-	print("n_objects (mask)", n_objects_class[1])
-	fig_tps_fps = plt.figure(figsize=(20, 15))
-
-	x1 = np.arange(1, len(cumul_tps[0])+1)
-	x2 = np.arange(1, len(cumul_tps[1])+1)
-	y1 = np.arange(1, len(cumul_fps[0])+1)
-	y2 = np.arange(1, len(cumul_fps[1])+1)
+	print("n_objects (no_mask): ", n_objects_class[0])
+	print("tp (no_mask): ", cumul_tps[0][-1])
+	print("fp (no_mask): ", cumul_fps[0][-1])
 	
-	plt.subplot(221)
-	plt.plot(x1, cumul_tps[0].cpu().numpy(), label="tps_no_masks")
-	plt.xlabel("n_objects")
-	plt.ylabel("cumul_tps")
-	plt.legend()
-
-	plt.subplot(222)
-	plt.plot(x2, cumul_tps[1].cpu().numpy(), label="tps_masks")
-	plt.xlabel("n_objects")
-	plt.ylabel("cumul_tps")
-	plt.legend()
+	print("n_objects (mask): ", n_objects_class[1])
+	print("tp (mask): ", cumul_tps[1][-1])
+	print("fp (mask): ", cumul_fps[1][-1])
 	
-	plt.subplot(223)
-	plt.plot(y1, cumul_fps[0].cpu().numpy(), label="fps_no_masks")
-	plt.xlabel("n_objects")
-	plt.ylabel("cumul_fps")
-	plt.legend()
-
-	plt.subplot(224)
-	plt.plot(y2, cumul_fps[1].cpu().numpy(), label="fps_masks")
-	plt.xlabel("n_objects")
-	plt.ylabel("cumul_fps")
-	plt.legend()
-	
-	plt.tight_layout()
-	fig_tps_fps.savefig("tps_fps.png")
-	print("Saved!")
-	plt.close()
-
 	# fig = plt.figure(figsize=(10,3))
 	# i = 1
 	# #set_trace()

@@ -105,9 +105,7 @@ def evaluate(test_loader, model):
 
 	_, _, _, cumul_tps, cumul_fps = calculate_mAP(det_boxes, det_labels, det_scores, true_boxes, true_labels, 0.5)
 
-	for i in range():
-		for j in range():
-			for k in range():
+	
 	fig_tps_fps = plt.figure(figsize=(20, 15))
 
 	x = np.arange(1, len(cumul_tps[0]))

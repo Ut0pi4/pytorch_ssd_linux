@@ -57,4 +57,4 @@ if __name__=="__main__":
 	
 	parser.add_argument('--dest', type=str, default="./FaceMaskDataset", help='path to dataset.')
 	args = parser.parse_args()
-	download_extract(dest)
+	download_extract(args.dest)

@@ -2,7 +2,7 @@ from torchvision import transforms
 from utils import *
 from PIL import Image, ImageDraw, ImageFont
 import argparse
-
+import sys
 import cv2
 
 # Taken from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Object-Detection
@@ -85,13 +85,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="FaceMaskDetection")
 
     parser.add_argument('--limit', type=int, default=0, help='limit to number of pictures')
+    parser.add_argument('--dataset_path', type=str, default="./FaceMaskDataset/FaceMaskDataset/val", help='limit to number of pictures')
     parser.add_argument('--image', type=str, default='nothing', help='image')
+    parser.add_argument("--checkpoint", type=str, default='./checkpoint_ssd300.pth.tar', "checkpoint path")
     args = parser.parse_args()
 
 
     # Load model checkpoint
-    checkpoint = '../checkpoint_2.pth.tar'
-    checkpoint = torch.load(checkpoint)
+    checkpoint = args.checkpoint
+    try:
+    	checkpoint = torch.load(checkpoint)
+    except:
+		print("Train the model or direct to checkpoint path to start object detection")
+		sys.exit()	
     start_epoch = checkpoint['epoch'] + 1
     print('\nLoaded checkpoint from epoch %d.\n' % start_epoch)
     model = checkpoint['model']
@@ -107,7 +113,7 @@ if __name__ == '__main__':
                                      std=[0.229, 0.224, 0.225])
 
     i=0
-    dataset_path = "../FaceMaskDataset/FaceMaskDataset/val"
+    dataset_path = args.dataset_path
     dest = "./detect_results"
     if not os.path.exists(dest):
         os.makedirs(dest)

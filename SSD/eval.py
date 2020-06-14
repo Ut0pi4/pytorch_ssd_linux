@@ -1,6 +1,7 @@
 from utils import *
 #from datasets import PascalVOCDataset
 from tqdm import tqdm
+import sys
 from pprint import PrettyPrinter
 import argparse
 import numpy as np
@@ -166,9 +167,9 @@ def evaluate(test_loader, model):
 if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description="FaceMaskDetection")
-	parser.add_argument('--dest', type=str, default="../FaceMaskDataset", help='path to dataset.')
+	parser.add_argument('--dest', type=str, default="./FaceMaskDataset", help='path to dataset.')
 	parser.add_argument('--limit', type=int, default=0, help='limit number of images.')
-	parser.add_argument('--checkpoint', type=str, default="../checkpoint_ssd300.pth.tar", help='limit number of images.')
+	parser.add_argument('--checkpoint', type=str, default="./checkpoint_ssd300.pth.tar", help='limit number of images.')
 	
 	args = parser.parse_args()
 	config = Config()
@@ -177,10 +178,13 @@ if __name__ == '__main__':
 	checkpoint = args.checkpoint
 	
 	# Load model checkpoint that is to be evaluated
-	checkpoint = torch.load(checkpoint)
-	model = checkpoint['model']
-	model = model.to(device)
-	
+	try:
+		checkpoint = torch.load(checkpoint)
+		model = checkpoint['model']
+		model = model.to(device)
+	except:
+		print("Train the model or direct to checkpoint path to start evaluate results")
+		sys.exit()	
 	#train(config, train_dataset)
 	print("loading test images")
 

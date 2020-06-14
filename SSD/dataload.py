@@ -10,12 +10,13 @@ import numpy as np
 #from matplotlib import pyplot as plt
 #import plotly.express as px
 #import plotly.graph_objects as go
+import sys 
 
 from six.moves import urllib
 import requests
 from pdb import set_trace
 import glob
-from download_dataset import download_extract
+# from download_dataset import download_extract
 
 
 import torch
@@ -34,9 +35,12 @@ def load_data(data_dir = "./", batch_size = 1):
 
 	# image_dataset = datasets.ImageFolder(os.path.join(data_dir), data_transforms['train'])
 	files = glob.glob(data_dir)
-	
-	image_dataset = datasets.ImageFolder(os.path.join(data_dir)) 
-	data_loader = DataLoader(image_dataset, batch_size=batch_size, shuffle=False)
+	try:
+		image_dataset = datasets.ImageFolder(os.path.join(data_dir)) 
+		data_loader = DataLoader(image_dataset, batch_size=batch_size, shuffle=False)
+	except:
+		print("Please download data with download_dataset.py first")
+		sys.exit()
 	return data_loader
 
 def loadxml(path):
@@ -91,21 +95,16 @@ def data_loader(dataloader, i):
 	# set_trace()
 	if (bndbox == []) | (imgsize == []) | (boxlabel == []) | (0 in imgsize):
 		return [None, None, None, None]             
-	# img, scale = resize_img(img, imgsize[:-1])
-	# bndbox = resize_box(bndbox, imgsize[:-1], [scale*ele for ele in imgsize[:-1]])
-	# boxlabel = boxlabel
-	# set_trace()
-	# return torch.from_numpy(img).permute(2,0,1).unsqueeze(0), \
-	#             torch.from_numpy(bndbox), boxlabel
+
 	return img, bndbox, boxlabel, difficult
 
 def retrieve_gt(path, split, limit=0):
 
   assert split in ["train", "val", "test"]
-  download_extract(path)
+  # download_extract(path)
   
-  path = os.path.join(path, "FaceMaskDataset")
-  
+  path = path + "/FaceMaskDataset"
+  # path = os.path.join(path, "/FaceMaskDataset")
   dataloader = load_data(data_dir = path)
 
   images = []

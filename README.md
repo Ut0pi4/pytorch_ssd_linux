@@ -42,11 +42,11 @@ To create a new conda environment for SSD, please run:
 ### Train
 To train an SSD model, please run:
 
-`
+```
 python SSD/train.py --dest=PATH_TO_DATASET
                     --limit=NO_OF_IMAGES_TO_PROCESS
                     --checkpoint=CHECKPOINT_TO_PATH
-`
+```
 
 Default parameters:
 - `dest`=`../FaceMaskDataset`
@@ -56,11 +56,11 @@ Default parameters:
 ### Test
 To evaluate the model and calculate mAPs, please run:
 
-`
+```
 python SSD/eval.py --dest=PATH_TO_DATASET
                 --limit=NO_OF_IMAGES_TO_PROCESS
                 --checkpoint=PATH_TO_CHECKPOINT
-`
+```
 
 Default parameters:
 - `dest`=`../FaceMaskDataset`
@@ -72,11 +72,12 @@ Precision-Recall curves are saved to P_R_curve_face.png and P_R_curve_facemask.p
 ### Detect
 To allow object detection, please run:
 
-`python SSD/detect.py --limit=NO_OF_IMAGES_FROM_TEST_SET_TO_PROCESS
+```
+python SSD/detect.py --limit=NO_OF_IMAGES_FROM_TEST_SET_TO_PROCESS
                       --image=IMAGE_NAME
                       --dataset_path=TEST_SET_PATH
                       --checkpoint=CHECPOINT_PATH
-`
+```
 Default parameters:
 - `limit`=`0`
 - `image`=`nothing`

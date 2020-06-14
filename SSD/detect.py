@@ -87,7 +87,7 @@ if __name__ == '__main__':
 	parser.add_argument('--limit', type=int, default=0, help='limit to number of pictures')
 	parser.add_argument('--dataset_path', type=str, default="./FaceMaskDataset/FaceMaskDataset/val", help='limit to number of pictures')
 	parser.add_argument('--image', type=str, default='nothing', help='image')
-	parser.add_argument("--checkpoint", type=str, default='./checkpoint_ssd300.pth.tar', "checkpoint path")
+	parser.add_argument("--checkpoint", type=str, default='./checkpoint_ssd300.pth.tar', help="checkpoint path")
 	args = parser.parse_args()
 
 

@@ -37,7 +37,7 @@ Default `dest`=`./FaceMaskDataset`
 ### Requirement
 To create a new conda environment for SSD, please run:
 
-`conda env create -f SSD_env.yml`
+`conda env create --name ssd -f SSD_env.yml`
 
 ### Train
 To train an SSD model, please run:

@@ -116,6 +116,7 @@ dependencies:
   - pexpect=4.8.0=py37_0
   - pickleshare=0.7.5=py37_0
   - pillow=7.1.2=py37hb39fc2d_0
+  - pip=20.1.1
   - pixman=0.38.0=h7b6447c_0
   - pkg-config=0.29.2=h1bed415_8
   - prometheus_client=0.7.1=py_0
@@ -181,12 +182,12 @@ dependencies:
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.3.7=h0b5b093_0
   - pip:
-    - apex==0.1
+    - apex
     - ipykernel==5.3.0
     - numpy==1.18.4
     - nvidia-ml-py3==7.352.0
     - opencv-contrib-python==4.2.0.34
     - opencv-python==4.2.0.34
-    - pip==20.1.1
+    
 prefix: /home/mym/anaconda3/envs/Pytorch
 

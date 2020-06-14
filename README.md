@@ -97,16 +97,22 @@ To train the YOLOv1, please run the following code:
 
 `
 python
-import models/YOLOv1
-from YOLOv1 import *
+`
+`
+from models import YOLOv1
+`
+`
 YOLOv1.train()
 `
 ### Detect Results (YOLOv1)
 To see some prediction results, please run the following code:
 `
 python
-import modelsYOLOv1
-from YOLOv1 import *
+`
+`
+from models import YOLOv1
+`
+`
 YOLOv1.prediction()
 `
 This command will take the first 3 images from test set and make predictions.
@@ -121,16 +127,22 @@ To train the YOLOv2, please run the following code:
 
 `
 python
-import models/YOLOv2
-from YOLOv2 import *
+`
+`
+from models import YOLOv2
+`
+`
 YOLOv2.train()
 `
 ### Detect Results (YOLOv1)
 To see some prediction results, please run the following code:
 `
 python
-import models/YOLOv2
-from YOLOv2 import *
+`
+`
+from models import YOLOv2
+`
+`
 YOLOv2.prediction()
 `
 This command will take the first 3 images from test set and make predictions.

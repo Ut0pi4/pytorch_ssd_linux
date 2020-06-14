@@ -39,6 +39,15 @@ To create a new conda environment for SSD, please run:
 
 `conda env create --name ssd -f SSD_env.yml`
 
+### Download Model
+To download pretrained model, please run the follow code:
+
+```
+python SSD/download_model --dest=DEST_TO_MODEL
+```
+
+Default `dest` is `"./"`.
+
 ### Train
 To train an SSD model, please run:
 

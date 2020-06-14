@@ -65,15 +65,80 @@ Default parameters:
 
 Precision-Recall curves are saved in P_R_curve_face.png and P_R_curve_facemask.png
 
-## YOLOv1
+## YOLOv1, YOLOv2 and Faster RCNN
 
 ### Requirement
-To create a new conda environment for YOLOv1, please run:
+To create a new conda environment for the remaining models, please run:
 
 `conda create --name yolo python=3.7.7 pip`
 
 `conda env update --name yolo -f SSD_env.yml`
 
+### Download models
+If you do not wish to train the model, you can download the models for YOLOv1 and YOLOv2, by running the following code:
+
+`
+python models/download_models.py --path=PATH_TO_MODELS
+`
+
+Default `path` is `"./"`.
+
+### Download models and weights
+To download models and weights for YOLOv1 and YOLOv2, please run the following code:
+
+`
+python models/download_models_weight.py --path=PATH_TO_MODELS
+`
+
+Default `path` is `"./"`.
+
+### Train (YOLOv1)
+To train the YOLOv1, please run the following code:
+
+`
+python
+import models/YOLOv1
+from YOLOv1 import *
+YOLOv1.train()
+`
+### Detect Results (YOLOv1)
+To see some prediction results, please run the following code:
+`
+python
+import modelsYOLOv1
+from YOLOv1 import *
+YOLOv1.prediction()
+`
+This command will take the first 3 images from test set and make predictions.
+To make random prediction of 3 images from test set, run:
+
+`
+YOLOv1.prediction(randpic=True)
+`
+
+### Train (YOLOv2)
+To train the YOLOv2, please run the following code:
+
+`
+python
+import models/YOLOv2
+from YOLOv2 import *
+YOLOv2.train()
+`
+### Detect Results (YOLOv1)
+To see some prediction results, please run the following code:
+`
+python
+import models/YOLOv2
+from YOLOv2 import *
+YOLOv2.prediction()
+`
+This command will take the first 3 images from test set and make predictions.
+To make random prediction of 3 images from test set, run:
+
+`
+YOLOv2.prediction(randpic=True)
+`
 
 
 <!---

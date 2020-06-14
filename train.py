@@ -214,7 +214,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=30, help='limit number of images.')
     parser.add_argument('--device', type=int, default=0, help='limit number of images.')
     parser.add_argument('--checkpoint', type=str, default='../checkpoint_ssd300.pth.tar', help='limit number of images.')
-    parser.add_argument('--batch_size', type=int, default=8, help='limit number of images.')
+    parser.add_argument('--batch_size', type=int, default=16, help='limit number of images.')
 
 
     args = parser.parse_args()

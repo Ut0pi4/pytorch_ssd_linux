@@ -26,7 +26,7 @@ class Config():
           self.checkpoint = path  # path to model checkpoint, None if none
         else:
           self.checkpoint = None
-        self.batch_size = 8  # batch size
+        self.batch_size = 16  # batch size
         # self.iterations = 120 # number of iterations to train
         self.iterations = 120000 # number of iterations to train
         self.workers = 0  # number of workers for loading data in the DataLoader

@@ -43,7 +43,7 @@ To create a new conda environment for SSD, please run:
 To download pretrained model, please run the follow code:
 
 ```
-python SSD/download_model --dest=DEST_TO_MODEL
+python SSD/download_model.py --dest=DEST_TO_MODEL
 ```
 
 Default `dest` is `"./"`.
